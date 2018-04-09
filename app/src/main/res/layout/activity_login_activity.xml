@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:background="@drawable/background_5"
+
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,10 +14,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#313030"
+            android:background="@color/colorPrimaryDark"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:title="登录"
-            android:titleMarginStart="150dp"
+            android:titleMarginStart="170dp"
             />
     </android.support.design.widget.AppBarLayout>
     <!--好看的图标-->
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:text="用户名:"
-        android:textColor="#ded8d8"
+        android:textColor="#000000"
         android:textSize="23dp"/>
         <EditText
             android:id="@+id/Edit_username"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:text="密    码:"
-            android:textColor="#e6dede"
+            android:textColor="#000000"
             android:textSize="23dp"/>
         <EditText
             android:id="@+id/Edit_password"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="90dp"
             android:text="记住密码"
-            android:textColor="#eaeaea"/>
+            android:textColor="#000000"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -92,8 +92,6 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:
                 android:autoLink="all"
                 android:gravity="center"
                 android:text="找回密码"
@@ -106,6 +104,7 @@
         </LinearLayout>
 
     </LinearLayout>
+    <!--登陆按钮-->
     <Button
         android:layout_marginTop="60dp"
         android:id="@+id/button_login"
