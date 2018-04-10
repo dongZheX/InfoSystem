@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/personal_item"
+        android:title="个人中心"
+        android:icon="@drawable/personal_item_image"
+        />
+    <item
+        android:id="@+id/myclass_item"
+        android:title="我的班级"
+        android:icon="@drawable/myclass_item_image"
+        />
+    <item
+        android:id="@+id/change_pass_item"
+        android:title="修改密码"
+        android:icon="@drawable/change_pass_item_image"
+    />
+    <item
+        android:id="@+id/setting_item"
+        android:title="系统设置"
+        android:icon="@drawable/settings_item_image"
+        />
+    <item
+        android:id="@+id/request_help_item"
+        android:title="寻求帮助"
+        android:icon="@drawable/request_help_item_image"
+        />
+</menu>

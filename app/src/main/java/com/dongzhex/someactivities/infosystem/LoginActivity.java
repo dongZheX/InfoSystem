@@ -40,12 +40,12 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.login_help_item:
                 AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
                 dialog.setTitle("登录帮助:");
-                dialog.setMessage("本软件不提供登陆功能\n，请从管理员哪里获取账号密码进行登录");
+                dialog.setMessage("本软件不提供登陆功能\n，请从管理员哪里获取账号密码进行登录.");
                 dialog.setCancelable(true);
                 dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        dialog.cancel();
                     }
                 });
                 dialog.show();
