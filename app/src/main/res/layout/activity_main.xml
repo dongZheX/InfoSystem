@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
+    <!--主要界面，嵌套fragment-->
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -32,21 +33,21 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
         <!--中部碎片-->
-        <fragment
+        <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            >
+            android:layout_height="457dp"
 
-        </fragment>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        </android.support.v4.view.ViewPager>
         <!--底部导航栏-->
-        <android.support.design.widget.BottomNavigationView
+        <com.ashokvarma.bottomnavigation.BottomNavigationBar
             android:id="@+id/navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
-            app:menu="@menu/navigation"/>
+            />
     </android.support.design.widget.CoordinatorLayout>
     <!--拉出界面-->
     <android.support.design.widget.NavigationView

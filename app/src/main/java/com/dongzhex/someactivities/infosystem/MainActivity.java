@@ -5,41 +5,39 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
+
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-
+    private BottomNavigationBar navigation;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        navigation = (BottomNavigationBar)findViewById(R.id.navigation);
+        initNavigation();
+    }
+    private void  initNavigation(){
+        navigation.setMode(BottomNavigationBar.MODE_FIXED);
+        navigation.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        navigation.addItem(new BottomNavigationItem(R.drawable.notification_item,"班级通知"));
+        navigation.addItem(new BottomNavigationItem(R.drawable.navibuttom_contact,"联系班级"));
+        navigation.addItem(new BottomNavigationItem(R.drawable.resource_item,"资源通道"));
+        navigation.setFirstSelectedPosition(0);
+        navigation.initialise();
+    }
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
+
             }
             return false;
         }
 
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
-
 }
