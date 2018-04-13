@@ -1,6 +1,5 @@
 package com.dongzhex.AdapterPack;
 
-import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,15 +12,15 @@ import com.dongzhex.entity.Info;
 import com.dongzhex.someactivities.infosystem.R;
 
 import java.util.List;
-import java.util.zip.Inflater;
+
 
 /**
  * Created by ASUS on 2018/4/12.
  */
 
 public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
-    public List<Info> mlist;
-
+    private List<Info> mlist;
+    private  int POWER;
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView title;  //通知标题
         TextView author;    //通知作者
@@ -29,17 +28,18 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
         CardView cView; //通知卡片
         ImageButton imageButton;//编辑菜单
         public ViewHolder(View v) {
-            super(itemView);
+            super(v);
             title = (TextView)v.findViewById(R.id.notification_title_text);
             author = (TextView)v.findViewById(R.id.notification_author_text);
             time = (TextView)v.findViewById(R.id.notification_time_text);
-            cView = (CardView)v.findViewById(R.id.notification_card);
+            cView = (CardView)v;
             imageButton = (ImageButton)v.findViewById(R.id.notification_menu_choose);
         }
     }
 
-    public InfoAdapter(List<Info> mlist) {
+    public InfoAdapter(List<Info> mlist,int power) {
         this.mlist = mlist;
+        this.POWER = power;
     }
 
     @Override
@@ -51,13 +51,42 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Info info = mlist.get(position);
+        holder.title.setText(info.getInfo_title());
+        holder.author.setText(info.getInfo_author());
+        holder.time.setText(info.getTime());
+        //按钮点击事件
+        if(POWER==1){
+            holder.imageButton.setEnabled(false);
+        }
+        holder.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        //card点击事件
+        holder.cView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
+
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mlist.size();
     }
+    public void removeData(int position){
+        mlist.remove(position);
+        //简单测试
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+    }
+
 
 
 }

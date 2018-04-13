@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/add_notification"
+        android:title="添加新通知"
+        android:icon="@drawable/system_zzz_add"
+        />
+</menu>

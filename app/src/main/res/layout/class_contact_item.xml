@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    android:id="@+id/cView_contact"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="8dp"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            app:cardElevation="10dp"
+            android:orientation="horizontal"
+            app:cardCornerRadius="10dp">
+    <!--头像-->
+    <android.support.v4.widget.CircleImageView
+        android:layout_margin="10dp"
+        android:id="@+id/contact_image_user"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:civ_border_color="#000000"
+        app:civ_border_width="10dp"
+        app:civ_border_overlay="false"
+        android:src="@drawable/moren_image_2"
+        />
+    <!--用户信息-->
+    <TextView
+        android:id="@+id/user_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="24dp"
+        android:layout_gravity="center"
+        android:text="董喆:15650111502"/>
+    <!--悬浮按钮-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/call_button"
+        android:layout_margin="20dp"
+        app:elevation="10dp"
+        android:layout_gravity="right"
+
+        android:background="#ffffff"
+        android:src="@drawable/app_call_recorder"
+        android:scaleType="centerInside"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+
+</android.support.v7.widget.CardView>

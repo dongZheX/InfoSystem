@@ -1,4 +1,4 @@
-package com.dongzhex.someactivities.infosystem;
+package com.dongzhex.AdapterPack;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

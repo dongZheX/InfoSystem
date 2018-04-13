@@ -34,6 +34,7 @@
         </android.support.design.widget.AppBarLayout>
         <!--中部碎片-->
         <android.support.v4.view.ViewPager
+            android:id="@+id/fragment_pager"
             android:layout_width="match_parent"
             android:layout_height="457dp"
 

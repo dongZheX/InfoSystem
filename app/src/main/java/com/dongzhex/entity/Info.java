@@ -10,10 +10,10 @@ public class Info extends DataSupport{
 
     private String Class_id=null;         //班级号
     private String Info_id=null;         //通知编号
-    private String Info_content=null;    //通知内容
-    private String Info_title=null;     //通知标题
-    private int Looked_num=0;        //通知查看数
-    private String time=null;          //发布时间
+    private String Info_content=null;    //通知内容1
+    private String Info_title=null;     //通知标题1
+    private int Looked_num=0;        //通知查看数1
+    private String time=null;          //发布时间1
     private String Info_author=null;    //发布者
     private String image_path=null;     //图片路径
 

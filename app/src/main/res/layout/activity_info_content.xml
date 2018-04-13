@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.dongzhex.someactivities.infosystem.InfoContentActivity">
+    <!--标题栏-->
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#dfc2c2"
+                android:textSize="24dp"
+                android:text="您要的通知到了"
+                android:gravity="center"/>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <!--起始页-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+
+        android:layout_marginBottom="4dp"
+        android:layout_height="wrap_content">
+        <!--通知标题-->
+        <TextView
+            android:id="@+id/notification_content_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:text="科研立项开始了"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:padding="10dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <!--通知人-->
+            <TextView
+                android:id="@+id/info_person"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发布人：董喆"
+                android:textColor="#604747"
+                android:layout_gravity="right"/>
+            <!--通知日期-->
+            <TextView
+                android:id="@+id/info_date"
+                android:layout_marginLeft="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#604747"
+                android:text="日期：2018/4/12"
+                android:layout_gravity="right"/>
+            <!--通知查看数-->
+            <TextView
+                android:layout_marginLeft="12dp"
+                android:id="@+id/info_looked_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#604747"
+                android:text="查看数：249"
+                android:layout_gravity="right"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000000"/>
+    <!--内容哦-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:scrollbarAlwaysDrawVerticalTrack="true">
+        <TextView
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#000000"
+            android:textSize="25dp"
+            android:text=""/>
+    </ScrollView>
+</LinearLayout>
