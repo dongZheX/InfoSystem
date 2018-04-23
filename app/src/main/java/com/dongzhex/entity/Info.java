@@ -42,6 +42,16 @@ public class Info extends DataSupport{
         this.image_path = image_path;
     }
 
+    public Info(String class_id, String info_id, String info_content, String info_title, int looked_num, String time, String info_author) {
+        Class_id = class_id;
+        Info_id = info_id;
+        Info_content = info_content;
+        Info_title = info_title;
+        Looked_num = looked_num;
+        this.time = time;
+        Info_author = info_author;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

@@ -15,13 +15,35 @@ public class UserX extends DataSupport{
     private String User_address;   //家庭地址
     private String User_QQ;        //QQ
     private String User_image;     //照片
+    private String birth = null;
 
-    public UserX(String username, String user_name, String class_id, String user_sex, String user_phone) {
+    public String getBirth() {
+        return birth;
+    }
+
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
+    public UserX(String username, String user_name, String class_id, String user_sex, String user_phone, String birth) {
         Username = username;
         User_name = user_name;
         Class_id = class_id;
         User_sex = user_sex;
         User_phone = user_phone;
+        this.birth = birth;
+    }
+
+    public UserX(String username, String user_name, String class_id, String user_sex, String user_phone, String user_address, String user_QQ, String user_image, String birth) {
+        Username = username;
+        User_name = user_name;
+        Class_id = class_id;
+        User_sex = user_sex;
+        User_phone = user_phone;
+        User_address = user_address;
+        User_QQ = user_QQ;
+        User_image = user_image;
+        this.birth = birth;
     }
 
     public String getUsername() {

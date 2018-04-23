@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/looked_num_item_wei"
+        android:title="未查看人"
+        android:icon="@drawable/ic_remove_red_eye_black_48dp"
+        />
+    <item
+        android:id="@+id/looked_num_item_yi"
+        android:title="已查看人"
+        android:icon="@drawable/ic_remove_red_eye_black_48dp"
+        />
+</menu>

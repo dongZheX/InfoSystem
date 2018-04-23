@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,21 +20,22 @@ import com.dongzhex.AdapterPack.UserXAdapter;
 import com.dongzhex.entity.UserX;
 import com.dongzhex.someactivities.infosystem.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ASUS on 2018/4/13.
  */
 
-public class ClassContantFragment extends Fragment {
+public class ClassContactFragment extends Fragment {
     private View view;
     private List<UserX> mlist;
     private RecyclerView recyclerView;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.class_contact_layout,container);
+        View view = inflater.inflate(R.layout.class_contact_layout,container,false);
         recyclerView = (RecyclerView)view.findViewById(R.id.contact_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         initmlist();
@@ -44,11 +46,11 @@ public class ClassContantFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CALL_PHONE},1);
         }
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
     //初始化
     private void initmlist(){
-        mlist = null;
+        mlist  = new ArrayList<>();
     }
     //权限申请
     @Override

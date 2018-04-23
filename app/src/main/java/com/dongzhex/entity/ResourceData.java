@@ -9,7 +9,7 @@ import org.litepal.crud.DataSupport;
 public class ResourceData extends DataSupport {
     private String name;
     private String url;
-    private int imageId;
+    private int imageId = 0;
 
     public int getImageId() {
         return imageId;

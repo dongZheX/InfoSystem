@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.entity.UserX;
 import com.dongzhex.someactivities.infosystem.R;
+import com.dongzhex.someactivities.infosystem.UserXInfoActivity;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class UserXAdapter extends RecyclerView.Adapter<UserXAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        UserX userX = mlist.get(position);
+        final UserX userX = mlist.get(position);
         String user_name = userX.getUser_name();
         final String user_phone = userX.getUser_phone();
         holder.User_info.setText(user_name+":"+user_phone);
@@ -81,7 +82,17 @@ public class UserXAdapter extends RecyclerView.Adapter<UserXAdapter.ViewHolder> 
         holder.cView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(Myapplication.getRealContext(), UserXInfoActivity.class);
+                intent.putExtra("Username",userX.getUsername());
+                intent.putExtra("User_name",userX.getUser_name());
+                intent.putExtra("Class_id",userX.getClass_id());
+                intent.putExtra("User_sex",userX.getUser_sex());
+                intent.putExtra("USer_phone",userX.getUser_phone());
+                intent.putExtra("User_address",userX.getUser_address());
+                intent.putExtra("User_QQ",userX.getUser_QQ());
+                intent.putExtra("User_image",userX.getUser_image());
+                intent.putExtra("User_birth",userX.getBirth());
+                Myapplication.getRealContext().startActivity(intent);
             }
         });
     }

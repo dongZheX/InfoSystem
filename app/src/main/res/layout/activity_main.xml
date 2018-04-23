@@ -32,23 +32,31 @@
                     android:text="主界面"/>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
-        <!--中部碎片-->
-        <android.support.v4.view.ViewPager
-            android:id="@+id/fragment_pager"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="457dp"
-
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <!--中部碎片-->
+            <android.support.v4.view.ViewPager
+                android:id="@+id/fragment_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            </android.support.v4.view.ViewPager>
+            <!--底部导航栏-->
+            <com.ashokvarma.bottomnavigation.BottomNavigationBar
+                android:layout_alignBottom="@id/fragment_pager"
+                android:id="@+id/navigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="?android:attr/windowBackground"
+                />
+        </RelativeLayout>
 
-        </android.support.v4.view.ViewPager>
-        <!--底部导航栏-->
-        <com.ashokvarma.bottomnavigation.BottomNavigationBar
-            android:id="@+id/navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="?android:attr/windowBackground"
-            />
+
+
     </android.support.design.widget.CoordinatorLayout>
     <!--拉出界面-->
     <android.support.design.widget.NavigationView

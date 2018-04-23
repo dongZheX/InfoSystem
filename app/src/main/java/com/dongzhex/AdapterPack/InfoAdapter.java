@@ -1,5 +1,6 @@
 package com.dongzhex.AdapterPack;
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.entity.Info;
+import com.dongzhex.someactivities.infosystem.InfoContentActivity;
 import com.dongzhex.someactivities.infosystem.R;
 
 import java.util.List;
@@ -51,7 +54,7 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Info info = mlist.get(position);
+        final Info info = mlist.get(position);
         holder.title.setText(info.getInfo_title());
         holder.author.setText(info.getInfo_author());
         holder.time.setText(info.getTime());
@@ -69,7 +72,15 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
         holder.cView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(Myapplication.getRealContext(), InfoContentActivity.class);
+                intent.putExtra("CLass_id",info.getClass_id());
+                intent.putExtra("Info_id",info.getInfo_id());
+                intent.putExtra("title",info.getInfo_title());
+                intent.putExtra("content",info.getInfo_content());
+                intent.putExtra("author",info.getInfo_author());
+                intent.putExtra("time",info.getTime());
+                intent.putExtra("looked_num",info.getLooked_num());
+                Myapplication.getRealContext().startActivity(intent);
             }
         });
 
@@ -86,7 +97,4 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }
-
-
-
 }

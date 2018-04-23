@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -16,8 +17,6 @@ import com.dongzhex.someactivities.infosystem.R;
 import com.dongzhex.someactivities.infosystem.ViewResource;
 
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ASUS on 2018/4/13.
@@ -34,13 +33,14 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView resource_name;
-        CircleImageView circleImageView;
+        ImageView circleImageView;
         Button button_enter;
         public ViewHolder(View view) {
             super(view);
              resource_name = (TextView) view.findViewById(R.id.resource_name);
-            circleImageView = (CircleImageView)view.findViewById(R.id.resource_image);
+            circleImageView = (ImageView)view.findViewById(R.id.resource_image);
             button_enter = (Button)view.findViewById(R.id.button_enter_resource);
+            button_enter.setText("点击进入");
         }
 
     }
@@ -64,6 +64,7 @@ public class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.ViewHo
                     .into(holder.circleImageView);
         }
         //进入点击事件
+
         holder.button_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,6 +3,7 @@ package com.dongzhex.fragments_main;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.dongzhex.AdapterPack.InfoAdapter;
 import com.dongzhex.entity.Info;
 import com.dongzhex.someactivities.infosystem.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,14 +26,15 @@ public class NotificationFragment extends Fragment {
     private List<Info> mlist=null;
     private  RecyclerView recyclerView;
     private View view;
+    private SwipeRefreshLayout swipeRefreshLayout;
     public NotificationFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.notification_fragment,container);
-        TextView title_main = (TextView)view.findViewById(R.id.main_Title);
+        view = inflater.inflate(R.layout.notification_fragment,container,false);
+        TextView title_main = (TextView) getActivity().findViewById(R.id.main_Title);
         title_main.setText("班级通知");
         //初始化
         initlist();
@@ -40,10 +43,10 @@ public class NotificationFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.setAdapter(infoAdapter);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
     private void initlist(){
-        mlist = null;
+        mlist  = new ArrayList<>();
     }
 
 

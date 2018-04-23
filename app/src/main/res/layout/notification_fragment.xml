@@ -3,6 +3,7 @@
           android:id="@+id/notification_fragment"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+
           android:orientation="vertical">
     <!--下拉刷新-->
     <android.support.v4.widget.SwipeRefreshLayout

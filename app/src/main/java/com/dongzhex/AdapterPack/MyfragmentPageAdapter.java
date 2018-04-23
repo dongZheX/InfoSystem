@@ -6,17 +6,21 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 /**
  * Created by ASUS on 2018/4/12.
  */
 
-public class MyfragmentPageAdapter extends FragmentStatePagerAdapter{
+public class MyfragmentPageAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = "MyfragmentPageAdapter";
     private final int PAGER_COUNT = 3;
+    List<Fragment> mlist;
     //碎片对象生命
-    public MyfragmentPageAdapter(FragmentManager fm){
+    public MyfragmentPageAdapter(FragmentManager fm,List<Fragment> list){
         super(fm);
         //碎片对象实例化
+        mlist = list;
     }
     @Override
     public int getCount() {
@@ -25,10 +29,12 @@ public class MyfragmentPageAdapter extends FragmentStatePagerAdapter{
 
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        Fragment fragment = null;
 
-        }
-        return null;
+           fragment = mlist.get(position);
+
+
+        return fragment;
     }
 
     @Override

@@ -43,9 +43,12 @@
         android:textColor="#000000"
         android:textSize="23dp"/>
         <EditText
+            android:layout_marginLeft="4dp"
+            android:background="@drawable/edittext_style"
             android:id="@+id/Edit_username"
             android:layout_width="250dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:hint="请输入用户名"/>
     </LinearLayout>
     <!--密码-->
     <LinearLayout
@@ -62,8 +65,11 @@
             android:textSize="23dp"/>
         <EditText
             android:id="@+id/Edit_password"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/edittext_style"
             android:inputType="textPassword"
             android:layout_width="250dp"
+            android:hint="请输入密码"
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <!--设置栏-->
