@@ -5,24 +5,89 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
 
-public class perfect_information_user extends AppCompatActivity {
+import com.dongzhex.NomalService.BaseTool;
+import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.entity.UserX;
+import com.dongzhex.webservice.PerfectInfoUserX;
+import com.dongzhex.webservice.UploadBitmap;
 
-    @Override
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class perfect_information_user extends PhotoGetter {
+    private String username;
+    private EditText perfect_name;//姓名输入
+    private EditText perfect_phone;//电话输入
+    private RadioButton man;//单选
+    private RadioButton woman;//单选
+    private CircleImageView imageViewT;
+    private Button choose_photo_button;
+    private Button set_confirm;
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfect_information_user);
         Toolbar toolbar_perfect = (Toolbar)findViewById(R.id.perfect_toolbar);
         setSupportActionBar(toolbar_perfect);
-        //启动逻辑
-        //
+         perfect_name = (EditText)findViewById(R.id.perfect_name);
+         perfect_phone = (EditText)findViewById(R.id.perfect_phone);
+         imageViewT = (CircleImageView)findViewById(R.id.perfect_photo);
+         choose_photo_button = (Button)findViewById(R.id.perfect_button_photo);
+         man  = (RadioButton) findViewById(R.id.radio_button_man);
+         woman = (RadioButton)findViewById(R.id.radio_button_woman);
+        username = getIntent().getStringExtra("args1");
+         set_confirm = (Button)findViewById(R.id.perfect_confirm);
+    }
+    //设置点击事件
+    private void setButton(){
+        circleImageView[0] = imageViewT;
+        final String sex = man.isChecked()?"男":"女";
+        final String phone = perfect_phone.getText().toString();
+        final String name = perfect_name.getText().toString();
+        final boolean isPhone = BaseTool.isMobileNumber(phone);
+        final boolean isName = BaseTool.ChineseNameTest(name);
+        choose_photo_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto(0);
+                UploadBitmap uploadBitmap = new UploadBitmap(username);
+                uploadBitmap.execute(bitmap[0]);
+            }
+        });
+        set_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isName&&isPhone){
+                    MessageBox.showMessageBox("ERROR","电话和姓名都不合法",true).show();
+                }
+                else if(!isName){
+                    MessageBox.showMessageBox("ERROR","姓名不合法",true).show();
+                }
+                else if(!isPhone){
+                    MessageBox.showMessageBox("ERROR","电话号码不合法",true).show();
+                }
+                else{
+                    UserX updateUser = new UserX();
+                    updateUser.setUsername(username);
+                    updateUser.setUser_sex(sex);
+                    updateUser.setUser_phone(phone);
+                    updateUser.setUser_name(name);
+                    PerfectInfoUserX perfectInfoUserX = new PerfectInfoUserX();
+                    perfectInfoUserX.execute(updateUser);
+                }
+            }
+        });
+
+
 
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.perfect_menu,menu);
@@ -54,6 +119,6 @@ public class perfect_information_user extends AppCompatActivity {
             intent.putExtra("args"+i+1,args[i]);
         }
         context.startActivity(intent);
-
     }
+
 }

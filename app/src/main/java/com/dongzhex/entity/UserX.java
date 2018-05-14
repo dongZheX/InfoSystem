@@ -7,15 +7,19 @@ import org.litepal.crud.DataSupport;
  */
 
 public class UserX extends DataSupport{
-    private String Username;       //用户名
-    private String User_name;      //姓名
-    private String Class_id;       //班级号
-    private String User_sex;       //性别
-    private String User_phone;     //联系方式
+    private String Username = "";       //用户名
+    private String User_name = "";      //姓名
+    private String Class_id = "";       //班级号
+    private String User_sex = "";       //性别
+    private String User_phone = "";     //联系方式
+
+
     private String User_address;   //家庭地址
-    private String User_QQ;        //QQ
-    private String User_image;     //照片
-    private String birth = null;
+    private String User_QQ = "";        //QQ
+    private String User_image = "";     //照片
+    private String birth = "";
+    public UserX() {
+    }
 
     public String getBirth() {
         return birth;

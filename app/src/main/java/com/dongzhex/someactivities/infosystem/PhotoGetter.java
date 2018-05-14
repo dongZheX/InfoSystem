@@ -28,6 +28,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /*
 未测试，一个需要取得图片的基础类
@@ -43,6 +45,7 @@ public class PhotoGetter extends AppCompatActivity {
     protected ImageView image[];
 
     protected Bitmap bitmap[];
+    protected CircleImageView circleImageView[];
 
     protected int counT;
 
@@ -63,6 +66,7 @@ public class PhotoGetter extends AppCompatActivity {
         image = new ImageView[1000];
 
         bitmap = new Bitmap[1000];
+        circleImageView = new CircleImageView[1000];
 
     }
 
@@ -342,7 +346,7 @@ public class PhotoGetter extends AppCompatActivity {
 
         System.out.println(path);
 
-        Glide.with(Myapplication.getRealContext()).load(path).into(image[counT]);
+        Glide.with(Myapplication.getRealContext()).load(path).into(circleImageView[counT]);
 
 
 

@@ -10,13 +10,31 @@ public class User extends DataSupport{
     private String username;
     private String password;
     private int power;
-    private String Class_id;
 
-    public User(String username, String password, int power, String class_id) {
+    public int getFirstLogin() {
+        return firstLogin;
+    }
+
+    public void setFirstLogin(int firstLogin) {
+        this.firstLogin = firstLogin;
+    }
+
+    private String Class_id;
+    private int firstLogin;
+
+    public User(String username, String password, int power, String class_id,int firstLogin) {
         this.username = username;
         this.password = password;
         this.power = power;
         Class_id = class_id;
+        this.firstLogin = firstLogin;
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        power = 0;
+        Class_id = null;
     }
 
     public String getClass_id() {
@@ -32,6 +50,9 @@ public class User extends DataSupport{
         return username;
     }
 
+    public User() {
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -42,5 +63,8 @@ public class User extends DataSupport{
 
     public void setPower(int power) {
         this.power = power;
+    }
+    public boolean textPass(String data){
+        return data.equals(password);
     }
 }

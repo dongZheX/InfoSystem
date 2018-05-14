@@ -1,5 +1,6 @@
 package com.dongzhex.someactivities.infosystem;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -23,12 +24,14 @@ public class MainActivity extends AppCompatActivity {
     public final static int PAGE_ONE = 0;
     public final static  int PAGE_TWO = 1;
     public final static int PAGE_THREE = 2;
+    public  String usernameP;
     private List<Fragment> fragmentList;
     private MyfragmentPageAdapter myfragmentPageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        usernameP = getIntent().getStringExtra("username");
         navigation = (BottomNavigationBar)findViewById(R.id.navigation);
         navigation.setFirstSelectedPosition(0);
         viewPage = (ViewPager)findViewById(R.id.fragment_pager);
@@ -110,7 +113,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if(navigation.getCurrentSelectedPosition()==0) {
             //加上权限处理
-            getMenuInflater().inflate(R.menu.notification_menu, menu);
+            SharedPreferences sharedPreferences = getSharedPreferences(usernameP,MODE_PRIVATE);
+            if(sharedPreferences.getInt("Power",0)==1) {
+                getMenuInflater().inflate(R.menu.notification_menu, menu);
+            }
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -119,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()){
+
 
         }
         return super.onOptionsItemSelected(item);

@@ -17,10 +17,35 @@
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
-    <TextView
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+   <LinearLayout
+       android:layout_width="356dp"
+       android:layout_marginTop="200dp"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center"
+       android:orientation="horizontal">
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="临时IP:"
+           android:textSize="19dp"
+           android:gravity="center"
+           android:layout_gravity="center"
+           android:textColor="#000000"/>
+       <EditText
+           android:id="@+id/edit_setIp"
+           android:layout_width="300dp"
+           android:background="@drawable/edittext_style"
+           android:layout_height="wrap_content"
+           android:hint="请输入ip"
+           android:layout_gravity="center"/>
+   </LinearLayout>
 
-        android:text="这里暂时没有内容|待添加"/>
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/btn_ip_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="确认"
+        android:background="@drawable/button_style"
+        android:layout_gravity="center"/>
 </LinearLayout>

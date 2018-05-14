@@ -5,5 +5,5 @@ package com.dongzhex.NomalService;
  */
 
 public class NetUnit {
-    static final String URL  = 0+"";
+    public static  String URL  = "http://192.234.234.23";
 }
