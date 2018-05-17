@@ -1,13 +1,10 @@
 package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.dongzhex.NomalService.BaseTool;
 import com.dongzhex.NomalService.MessageBox;
 import com.dongzhex.NomalService.NetUnit;
-import com.dongzhex.entity.Info;
-import com.dongzhex.jsonService.JsonService;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,59 +14,60 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
- * Created by ASUS on 2018/5/7.
+ * Created by ASUS on 2018/5/17.
  */
 
-public class RequestNotificationList extends AsyncTask<String,Integer,Integer> {
-    List<Info> list;
-    String urlString = NetUnit.URL+"/infoSystem/RequestNotificationList";
-    private static final String TAG = "RequestNotificationList";
-    public RequestNotificationList(List<Info> list) {
-        
-        this.list = list;
-    }
-
+public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
+    private String urls = NetUnit.URL+"InfoSystem/ResetPassword";
+    String result;
     @Override
     protected Integer doInBackground(String... params) {
-        String class_id = params[0];
-        OutputStream out;
-        InputStream in;
+        String data = params[0]+"/"+params[1]+"/"+params[2];
         BufferedReader bufferedReader;
         BufferedWriter bufferedWriter;
-        String line,jsonBack;
-        StringBuilder builder = new StringBuilder();
+        OutputStream out;
+        InputStream in;
+
         try {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            URL url = new URL(urls);
+            HttpURLConnection conn =(HttpURLConnection) url.openConnection();
             BaseTool.initConn(conn);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
-            bufferedWriter.write(class_id);
+            bufferedWriter.write(data);
+            bufferedWriter.flush();
             conn.connect();
-            if(conn.getResponseCode()==200){
-                Log.d(TAG, "连接成功");
-            }
+            //接受服务器数据
             in = conn.getInputStream();
             bufferedReader = new BufferedReader(new InputStreamReader(in));
-            while((line=bufferedReader.readLine())!=null){
-                builder.append(line);
-            }
-            jsonBack = builder.toString();
-            list = JsonService.jsonToList(jsonBack,Info.class);
+            if(conn.getResponseCode()==200) {
 
+                result = bufferedReader.readLine();
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            list = null;
             MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
         }
-        return 0;
+        if(result.equals("1")){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+
     }
 
     @Override
     protected void onPostExecute(Integer integer) {
+        if(integer==1){
+            MessageBox.showMessageBox("提示","修改成功",true).show();
+        }
+        else{
+            MessageBox.showMessageBox("错误","修改失败，请确认原密码是否正确",true).show();
+        }
         super.onPostExecute(integer);
     }
 }

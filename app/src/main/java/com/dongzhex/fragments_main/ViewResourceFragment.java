@@ -38,5 +38,6 @@ public class ViewResourceFragment extends Fragment {
     public void initList(){
         mlist = new ArrayList<ResourceData>();
         mlist.add(new ResourceData("校园信息化门户","https://portal.wh.sdu.edu.cn",R.drawable.shandongdaxue));
+
     }
 }

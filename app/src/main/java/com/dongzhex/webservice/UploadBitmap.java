@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.dongzhex.NomalService.BaseTool;
+import com.dongzhex.NomalService.MessageBox;
 import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.PackPhoto;
@@ -68,6 +69,7 @@ public class UploadBitmap extends AsyncTask<Bitmap,Integer,String> {
 
         }catch (Exception e){
             e.printStackTrace();
+            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
         }
 
         return "";

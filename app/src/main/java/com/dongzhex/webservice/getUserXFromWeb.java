@@ -3,7 +3,6 @@ package com.dongzhex.webservice;
 import android.os.AsyncTask;
 
 import com.dongzhex.NomalService.BaseTool;
-import com.dongzhex.NomalService.MessageBox;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.UserX;
 import com.dongzhex.jsonService.JsonService;
@@ -16,23 +15,22 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
- * Created by ASUS on 2018/5/14.
+ * Created by ASUS on 2018/5/17.
  */
 
-public class RequestContantList extends AsyncTask<String,Integer,Integer> {
-    List<UserX> mylist;
-    List<UserX> list;
+public class getUserXFromWeb extends AsyncTask<String,Integer,Integer>{
+    UserX userX1;
+    UserX user;
     String urlS = NetUnit.URL+"/InfoSystem/ReturnContantList";
-    public RequestContantList(List<UserX> mlist) {
-        this.mylist = mlist;
+    public getUserXFromWeb(UserX userx) {
+        this.user = userx;
     }
 
     @Override
     protected Integer doInBackground(String... params) {
-        String Class_id = params[0];
+        String username = params[0];
         String line,jsonBack;
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -46,23 +44,30 @@ public class RequestContantList extends AsyncTask<String,Integer,Integer> {
             BaseTool.initConn(conn);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
-            bufferedWriter.write(Class_id);
+            bufferedWriter.write(username);
             bufferedWriter.flush();
             bufferedWriter.close(); out.close();//关闭流
             conn.connect();
-            in = conn.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
-            while((line=bufferedReader.readLine())!=null){
-                stringBuilder.append(line);
+            if(conn.getResponseCode()==200) {
+                in = conn.getInputStream();
+                bufferedReader = new BufferedReader(new InputStreamReader(in));
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                jsonBack = stringBuilder.toString();
+                userX1 = JsonService.jsonToJavaBean(jsonBack,UserX.class);
+                in.close();
+                out.close();
+                bufferedReader.close();
+                bufferedWriter.close();
+                return 1;
             }
-            jsonBack = stringBuilder.toString();
-            list = JsonService.jsonToList(jsonBack,UserX.class);
             conn.disconnect();
-            return 1;
+           return 0;
 
         } catch (Exception e) {
             e.printStackTrace();
-            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+
         }
 
         return null;
@@ -71,7 +76,7 @@ public class RequestContantList extends AsyncTask<String,Integer,Integer> {
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer == 1){
-            mylist = list;
+            user = userX1;
         }
         super.onPostExecute(integer);
     }

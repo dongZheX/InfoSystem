@@ -3,6 +3,7 @@ package com.dongzhex.webservice;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.dongzhex.NomalService.MessageBox;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.User;
 import com.dongzhex.jsonService.JsonService;
@@ -68,7 +69,7 @@ public class LoginService extends AsyncTask<String,User,User> {
 
             }
         } catch (Exception e) {
-
+            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
             e.printStackTrace();
         }
 

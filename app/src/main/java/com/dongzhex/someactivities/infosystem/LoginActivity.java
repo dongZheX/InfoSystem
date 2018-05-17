@@ -191,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean checkValidInfo(){
         string_username = username.getText().toString();
         string_password = password.getText().toString();
-        boolean isValid = (string_username.length()>6);
+        boolean isValid = (string_username.length()>=6);
         boolean isNull = string_username.equals("")||string_password.equals("");
         return !isNull&&isValid;
 

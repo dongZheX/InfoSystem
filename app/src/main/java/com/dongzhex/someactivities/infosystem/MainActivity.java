@@ -1,22 +1,34 @@
 package com.dongzhex.someactivities.infosystem;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.bumptech.glide.Glide;
 import com.dongzhex.AdapterPack.MyfragmentPageAdapter;
+import com.dongzhex.NomalService.Myapplication;
+import com.dongzhex.NomalService.NetUnit;
+import com.dongzhex.entity.UserX;
 import com.dongzhex.fragments_main.ClassContactFragment;
 import com.dongzhex.fragments_main.NotificationFragment;
 import com.dongzhex.fragments_main.ViewResourceFragment;
+import com.dongzhex.webservice.getUserXFromWeb;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     private ViewPager viewPage;
@@ -27,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
     public  String usernameP;
     private List<Fragment> fragmentList;
     private MyfragmentPageAdapter myfragmentPageAdapter;
+    private UserX userx;
+    private String username;
+    private NavigationView navigationView;
+    private DrawerLayout mdrawerLayout;
+    private CircleImageView circleImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,17 +61,81 @@ public class MainActivity extends AppCompatActivity {
         initViewPageScroll();
         myfragmentPageAdapter = new MyfragmentPageAdapter(getSupportFragmentManager(),fragmentList);
         viewPage.setAdapter(myfragmentPageAdapter);
+        //初始化配置
+        SharedPreferences sharedPreferences1 = Myapplication.getRealContext().getSharedPreferences("presentUser",MODE_PRIVATE);
+        username = sharedPreferences1.getString("Username","");
+        getUserXFromWeb getUserX = new getUserXFromWeb(userx);
+        getUserX.execute(username);
+        //配置左上按钮
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar!=null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);
+        }
+        //初始化拖拽栏
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        mdrawerLayout = (DrawerLayout)findViewById(R.id.drawer);
+        circleImageView = (CircleImageView)navigationView.findViewById(R.id.icon_image);
+        String image = NetUnit.URL+"InfoSystem"+userx.getUser_image();
+        if(userx.getUser_image()!=null&&userx.getUser_image()!=""){
+            Glide.with(MainActivity.this).load(image).into(circleImageView);
 
+        }
+        setClickNavi();
     }
     //初始化碎片队列
     void initFragmentQueue(){
-        fragmentList = new ArrayList<Fragment>();
+        fragmentList = new ArrayList<>();
         NotificationFragment notificationFragment = new NotificationFragment();
         ClassContactFragment classContactFragment = new ClassContactFragment();
         ViewResourceFragment viewResourceFragment = new ViewResourceFragment();
         fragmentList.add(notificationFragment);
         fragmentList.add(classContactFragment);
         fragmentList.add(viewResourceFragment);
+    }
+    //设置拖拽点击事件
+    void setClickNavi(){
+        navigationView.setCheckedItem(R.id.personal_item);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.personal_item:
+                    {
+                        Intent intent = new Intent(MainActivity.this,Personal_Center.class);
+                        mdrawerLayout.closeDrawers();
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.myclass_item:{
+                        Intent intent = new Intent(MainActivity.this,MyClassActivity.class);
+                        mdrawerLayout.closeDrawers();
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.change_pass_item:{
+                        Intent intent = new Intent(MainActivity.this,ResetPassword.class);
+                        mdrawerLayout.closeDrawers();
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.setting_item:{
+                        Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                        mdrawerLayout.closeDrawers();
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.request_help_item:{
+                        Intent intent = new Intent(MainActivity.this,HelpActivity.class);
+                        mdrawerLayout.closeDrawers();
+                        startActivity(intent);
+                        break;
+                    }
+                }
+                return false;
+            }
+        });
     }
     //初始化滑动碎片时间
     private void initViewPageScroll(){
@@ -127,10 +209,20 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
+            case android.R.id.home:
 
 
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String image = NetUnit.URL+"InfoSystem"+userx.getUser_image();
+        if(userx.getUser_image()!=null&&userx.getUser_image()!=""){
+            Glide.with(MainActivity.this).load(image).into(circleImageView);
+
+        }
+    }
 }

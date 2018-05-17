@@ -1,6 +1,7 @@
 package com.dongzhex.fragments_main;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,11 +18,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.dongzhex.AdapterPack.UserXAdapter;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.entity.UserX;
 import com.dongzhex.someactivities.infosystem.R;
+import com.dongzhex.webservice.RequestContantList;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by ASUS on 2018/4/13.
@@ -32,15 +36,20 @@ public class ClassContactFragment extends Fragment {
     private List<UserX> mlist;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private String Class_id;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.class_contact_layout,container,false);
         recyclerView = (RecyclerView)view.findViewById(R.id.contact_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.refresh_contact);
+        setSwipeRefreshLayout();//设置刷新事件
         initmlist();
         UserXAdapter userXAdapter = new UserXAdapter(mlist);
-
+        recyclerView.setAdapter(userXAdapter);//设置列表
+        SharedPreferences sharedPreferences1 = Myapplication.getRealContext().getSharedPreferences("presentUser",MODE_PRIVATE);
+        Class_id = sharedPreferences1.getString("Class_id","");//读取配置
         //权限申请
         if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CALL_PHONE},1);
@@ -50,7 +59,17 @@ public class ClassContactFragment extends Fragment {
     }
     //初始化
     private void initmlist(){
-        mlist  = new ArrayList<>();
+        RequestContantList requestContantList = new RequestContantList(mlist);
+        requestContantList.execute(Class_id);
+    }
+    private void setSwipeRefreshLayout(){
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initmlist();
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        });
     }
     //权限申请
     @Override
