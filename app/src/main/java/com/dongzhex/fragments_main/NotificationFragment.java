@@ -17,9 +17,14 @@ import android.widget.TextView;
 
 import com.dongzhex.AdapterPack.InfoAdapter;
 import com.dongzhex.NomalService.Myapplication;
+import com.dongzhex.OutDialog.InsertInfoDialog;
 import com.dongzhex.entity.Info;
+import com.dongzhex.entity.User;
+import com.dongzhex.entity.UserX;
+import com.dongzhex.entity.successListener;
 import com.dongzhex.someactivities.infosystem.R;
 import com.dongzhex.webservice.RequestNotificationList;
+import com.dongzhex.webservice.publishInfoWebService;
 
 import java.util.List;
 
@@ -36,7 +41,7 @@ public class NotificationFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private String username;
     private String Class_id;
-
+    private successListener sl;
     public NotificationFragment() {
     }
 
@@ -50,9 +55,9 @@ public class NotificationFragment extends Fragment {
         //初始化
         initlist();
         recyclerView = (RecyclerView) view.findViewById(R.id.notification_recycler);
-        InfoAdapter infoAdapter = new InfoAdapter(mlist,1);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(infoAdapter);
+
         setHasOptionsMenu(true);
         SharedPreferences sharedPreferences1 = Myapplication.getRealContext().getSharedPreferences("presentUser",MODE_PRIVATE);
         Class_id = sharedPreferences1.getString("Class_id","");
@@ -60,20 +65,60 @@ public class NotificationFragment extends Fragment {
         return view;
     }
     private void initlist(){
-        RequestNotificationList requestNotificationList = new RequestNotificationList(mlist);
+        sl = new successListener() {
+            @Override
+            public void success(User x) {
+
+            }
+
+            @Override
+            public void success(String x) {
+
+            }
+
+            @Override
+            public void successInfo(List<Info> mlist) {
+                InfoAdapter infoAdapter = new InfoAdapter(mlist,1,getActivity());
+                recyclerView.setAdapter(infoAdapter);
+            }
+
+            @Override
+            public void successUserX(List<UserX> mlist) {
+
+            }
+        };
+        RequestNotificationList requestNotificationList = new RequestNotificationList(sl);
         requestNotificationList.execute(Class_id);
     }
     private void setSwipeRefresh(){
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                RequestNotificationList requestNotificationList = new RequestNotificationList(mlist);
-                requestNotificationList.execute(Class_id);
-                recyclerView.getAdapter().notifyDataSetChanged();
+                onRefresh();
             }
         });
     }
-
+    private void onRefresh(){
+        new  Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RequestNotificationList requestNotificationList = new RequestNotificationList(sl);
+                        requestNotificationList.execute(Class_id);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -86,9 +131,26 @@ public class NotificationFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //添加通知
+        View.OnClickListener listener1;
+        final InsertInfoDialog dialog  = new InsertInfoDialog(getActivity(),R.layout.infodialog,"发布");;
+       listener1  = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = dialog.text_title.getText().toString();
+                String content = dialog.text_title.getText().toString();
+                publishInfoWebService publishInfoWebService = new publishInfoWebService();
+                publishInfoWebService.execute(Class_id,username,title,content);
+                RequestNotificationList requestNotificationList = new RequestNotificationList(sl);
+                requestNotificationList.execute(Class_id);
+                recyclerView.getAdapter().notifyDataSetChanged();
+                dialog.cancel();
+            }
+        };
+        dialog.setListener(listener1);
         switch (item.getItemId()){
             case R.id.add_notification:{
-
+                dialog.show();
             }
         }
         return super.onOptionsItemSelected(item);

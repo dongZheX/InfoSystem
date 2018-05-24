@@ -1,9 +1,10 @@
 package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.dongzhex.NomalService.BaseTool;
 import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 
 import java.io.BufferedReader;
@@ -22,6 +23,7 @@ import java.net.URL;
 public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
     private String urls = NetUnit.URL+"InfoSystem/ResetPassword";
     String result;
+    private static final String TAG = "ResetPassWebService";
     @Override
     protected Integer doInBackground(String... params) {
         String data = params[0]+"/"+params[1]+"/"+params[2];
@@ -33,7 +35,7 @@ public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
         try {
             URL url = new URL(urls);
             HttpURLConnection conn =(HttpURLConnection) url.openConnection();
-            BaseTool.initConn(conn);
+            NetUnit.initConn(conn);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(data);
@@ -49,7 +51,7 @@ public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+            Log.d(TAG, "ERROR ");
         }
         if(result.equals("1")){
             return 1;
@@ -63,10 +65,10 @@ public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer==1){
-            MessageBox.showMessageBox("提示","修改成功",true).show();
+            MessageBox.showMessageBox(Myapplication.getRealContext(),"提示","修改成功",true).show();
         }
         else{
-            MessageBox.showMessageBox("错误","修改失败，请确认原密码是否正确",true).show();
+            MessageBox.showMessageBox(Myapplication.getRealContext(),"错误","修改失败，请确认原密码是否正确",true).show();
         }
         super.onPostExecute(integer);
     }

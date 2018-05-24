@@ -69,7 +69,7 @@ public class UploadBitmap extends AsyncTask<Bitmap,Integer,String> {
 
         }catch (Exception e){
             e.printStackTrace();
-            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+            MessageBox.showMessageBox(Myapplication.getRealContext(),"警告","系统错误，请联系管理员",true).show();
         }
 
         return "";

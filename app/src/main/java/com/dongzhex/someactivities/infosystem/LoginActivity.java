@@ -1,13 +1,16 @@
 package com.dongzhex.someactivities.infosystem;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +21,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dongzhex.NomalService.MD5;
+import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.entity.Info;
 import com.dongzhex.entity.User;
+import com.dongzhex.entity.UserX;
+import com.dongzhex.entity.successListener;
+import com.dongzhex.jsonService.JsonService;
 import com.dongzhex.webservice.LoginService;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,12 +42,15 @@ public class LoginActivity extends AppCompatActivity {
     private CheckBox remember_pass;
     private Button login;
     private TextView find_back_pass;
-    private String string_username;
-    private String string_password;
+    private String string_username="";
+    private String string_password="";
     private Boolean isRemember;
     private SharedPreferences mainSetting;//主配置文件
     private CircleImageView circleImageView;//头像框
     private boolean SuccessFlag = false;//是否登陆成功
+    private static final String TAG = "LoginActivity";
+    private  User presentUser = null;
+     String cc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +58,11 @@ public class LoginActivity extends AppCompatActivity {
         //设置标题栏
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mainSetting = getSharedPreferences("mainSetting",MODE_PRIVATE);
+        if(mainSetting.getBoolean("isLogin",false)){
+            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+            startActivity(intent);
+        }
         //标题栏的home按钮
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null) {
@@ -56,10 +74,11 @@ public class LoginActivity extends AppCompatActivity {
         login = (Button)findViewById(R.id.button_login);
         find_back_pass = (TextView)findViewById(R.id.find_back_pass);
         remember_pass = (CheckBox)findViewById(R.id.remember_pass);
-         mainSetting = getSharedPreferences("mainSetting",MODE_PRIVATE);
+
         isRemember = mainSetting.getBoolean("isRemember",false);
         circleImageView = (CircleImageView)findViewById(R.id.loginPhoto);
         circleImageView.setImageResource(R.drawable.morentouxiang);
+
         if(isRemember){
             string_username = mainSetting.getString("username","");
             string_password =mainSetting.getString("password","");
@@ -68,6 +87,11 @@ public class LoginActivity extends AppCompatActivity {
             remember_pass.setChecked(true);
         }
         setLoginClick();
+        if(checkNetwork()){
+
+            Toast.makeText(this, "网络可用", Toast.LENGTH_SHORT).show();
+
+        }
 
     }
     //菜单初始化
@@ -102,22 +126,99 @@ public class LoginActivity extends AppCompatActivity {
     //login点击事件
     private void setLoginClick(){
         SuccessFlag = false;
-        final User presentUser = new User();
-        LoginService loginS = new LoginService(presentUser);
-        loginS.execute(string_username,string_password);
-        final String trueName = presentUser.getUsername();
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String trueName= "";
+                string_username = username.getText().toString();
+                string_password = password.getText().toString();
+                //输出信息控制
+                if(!checkValidInfo()){
+                    MessageBox.showMessageBox(LoginActivity.this,"警告","信息不合法",true).show();
+                    return;
+                }// end if checkValidInfo
+                //保存子线程数据
+                final SharedPreferences share = getSharedPreferences("tempData",MODE_PRIVATE);
+                final SharedPreferences.Editor editors= share.edit();
+                successListener myLisenter = new successListener() {
+                    @Override
+                    public void success(User x) {
+                    }
+
+                    @Override
+                    public void success(String x) {
+
+
+                    }
+
+                    @Override
+                    public void successInfo(List<Info> mlist) {
+                    }
+
+                    @Override
+                    public void successUserX(List<UserX> mlist) {
+                    }
+                };
+                LoginService loginS = new LoginService(myLisenter);
+                if(!string_password.equals("")&&!string_password.equals(""))
+                loginS.execute(string_username,string_password);
+                String data = share.getString("data1","").replaceAll( "\\\\","");
+                Log.d(TAG, data);
+               // data = data.substring(1,data.length()-1);
+                presentUser = JsonService.jsonToJavaBean(data,User.class);
+
+                //得到presentsSer
+                /*参数检验*/
+                if(presentUser!=null) {
+                    trueName = presentUser.getUsername();
+                }
+                else{
+                    //失败退出
+                    MessageBox.showMessageBox(LoginActivity.this,"警告","网络错误",true);
+                        return;
+                }
                 //检测是否输入合法
-                if(checkValidInfo()) {
+
+
                     //记住密码设置
                     if (isRemember) {
                         //用户重新输入
-                        if(!mainSetting.getString("username","").equals(string_username)) {
-                            if(presentUser.textPass(MD5.getMD5(string_password))&&trueName.equals(string_username)){
+                        if (!mainSetting.getString("username", "").equals(string_username) || !password.getText().toString().equals(mainSetting.getString("password", ""))) {
+
+                            if (presentUser.textPass(MD5.getMD5(string_password)) && trueName.equals(string_username)) {
+                                //记住密码但是又换了信息的检验成功
                                 Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
-                                if(remember_pass.isChecked()){
+                                if (remember_pass.isChecked()) {
+                                    SharedPreferences.Editor editor = mainSetting.edit();
+                                    editor.putBoolean("isRemember", true);
+                                    editor.putString("username", string_username);
+                                    editor.putString("password", MD5.getMD5(string_password));//可能出现错误debug
+                                    editor.apply();
+                                }
+                                SuccessFlag = true;
+                            }
+                        } else {
+
+                            if (presentUser.textPass(string_password) && trueName.equals(string_username)) {
+                                Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
+                                if (!remember_pass.isChecked()) {
+                                    SharedPreferences.Editor editor = mainSetting.edit();
+                                    editor.putBoolean("isRemember", false);
+                                    editor.putString("username", "");
+                                    editor.putString("password", "");//可能出现错误debug
+                                    editor.apply();
+                                }
+                                SuccessFlag = true;
+                            }
+
+                        }
+                    }//end if isRemember
+                        else{
+                        Log.d(TAG, "onClick: ");
+                            if (presentUser.textPass(MD5.getMD5(string_password)) && trueName.equals(string_username)) {
+                                Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
+                                if (remember_pass.isChecked()) {
                                     SharedPreferences.Editor editor = mainSetting.edit();
                                     editor.putBoolean("isRemember", true);
                                     editor.putString("username", string_username);
@@ -127,63 +228,43 @@ public class LoginActivity extends AppCompatActivity {
                                 SuccessFlag = true;
                             }
                         }
-                        else{
-                            if(presentUser.textPass(string_password)&&trueName.equals(string_username)){
-                                Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
-                                if(!remember_pass.isChecked()){
-                                    SharedPreferences.Editor editor = mainSetting.edit();
-                                    editor.putBoolean("isRemember", false);
-                                    editor.putString("username", "");
-                                    editor.putString("password","");//可能出现错误debug
-                                    editor.apply();
-                                }
-                                SuccessFlag = true;
-                            }
-                        }
-                    }
-                    else {
-                        if(presentUser.textPass(MD5.getMD5(string_password))&&trueName.equals(string_username)){
-                            Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
-                            if(remember_pass.isChecked()){
-                                SharedPreferences.Editor editor = mainSetting.edit();
-                                editor.putBoolean("isRemember", true);
-                                editor.putString("username", string_username);
-                                editor.putString("password", MD5.getMD5(string_password));//可能出现错误debug
-                                editor.apply();
-                            }
-                            SuccessFlag = true;
-                        }
-                    }
-                }
-                else{
-                    //输入不合法的提示
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                    builder.setTitle("错误")
-                            .setMessage("不合法的信息")
-                            .setCancelable(true);
-                    builder.show();
+
+
+
+                if(!remember_pass.isChecked()){
+                    //记住密码取消
+                    SharedPreferences.Editor editor = mainSetting.edit();
+                    editor.clear();
+                    editor.apply();
                 }
                 if(SuccessFlag){
                     int firstLogin = presentUser.getFirstLogin();
                     String Class_id = presentUser.getClass_id();
                     int power = presentUser.getPower();
-                    SharedPreferences presentUser = getSharedPreferences("presentUser",MODE_PRIVATE);
+                    SharedPreferences presentUsers = getSharedPreferences("presentUser",MODE_PRIVATE);
                     SharedPreferences.Editor editor1 = mainSetting.edit();
-                    SharedPreferences.Editor editor = presentUser.edit();
+                    SharedPreferences.Editor editor = presentUsers.edit();
                     editor.putString("Class_id",Class_id);
                     editor.putInt("Power",power);
                     editor.putString("Username",trueName);
                     editor1.putString("presentUser",trueName);
+                    //editor1.putBoolean("isLogin",true);
                      editor.apply();
+                    editor1.apply();
                     Intent intent = null;
                     //0第一次登陆，1不是第一次登陆
                     if(firstLogin == 0){
                         perfect_information_user.activityStart(LoginActivity.this,trueName);
+
                     }
+
                     else{
+
                         intent = new Intent(LoginActivity.this,MainActivity.class);
                         startActivity(intent);
                     }
+                }else{
+                    MessageBox.showMessageBox(LoginActivity.this,"警告","密码或者用户名错误",true);
                 }
             }
         });
@@ -194,6 +275,19 @@ public class LoginActivity extends AppCompatActivity {
         boolean isValid = (string_username.length()>=6);
         boolean isNull = string_username.equals("")||string_password.equals("");
         return !isNull&&isValid;
+
+    }
+    private boolean checkNetwork() {
+
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connManager.getActiveNetworkInfo() != null) {
+
+            return connManager.getActiveNetworkInfo().isAvailable();
+
+        }
+
+        return false;
 
     }
 

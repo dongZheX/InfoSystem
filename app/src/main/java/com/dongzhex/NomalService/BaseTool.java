@@ -10,9 +10,6 @@ import android.graphics.RectF;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -67,26 +64,19 @@ public class BaseTool {
     }
     //验
     public static boolean isMobileNumber(String mobilenumber) {
-        Pattern p = null;
-        Matcher m = null;
         boolean b = false;
-        p = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$");
-        m = p.matcher(mobilenumber);
-        b = m.matches();
-        return b;
+        String val =  "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17([0,1,6,7,]))|(18[0-2,5-9]))\\\\d{8}$";
+        boolean isPhone =Pattern.compile(val).matcher(val).matches();
+        return isPhone;
     }
     public static boolean ChineseNameTest(String name) {
-        if (!name.matches("[\u4e00-\u9fa5]{2,4}")) {
-            System.out.println("只能输入2到4个汉字");
-            return false;
-        }else return true;
-    }
-    public static void initConn(HttpURLConnection conn) throws ProtocolException {
-        conn.setRequestMethod("POST");
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        conn.setConnectTimeout(1000);
-        conn.setReadTimeout(1000);
+
+        String regex = "^[\\p{L} .'-]+$";
+
+        boolean isName = Pattern.matches(regex, name);
+        return isName;
+
 
     }
+
 }

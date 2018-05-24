@@ -44,36 +44,46 @@ public class perfect_information_user extends PhotoGetter {
          woman = (RadioButton)findViewById(R.id.radio_button_woman);
         username = getIntent().getStringExtra("args1");
          set_confirm = (Button)findViewById(R.id.perfect_confirm);
+         setButton();
     }
     //设置点击事件
     private void setButton(){
         circleImageView[0] = imageViewT;
-        final String sex = man.isChecked()?"男":"女";
-        final String phone = perfect_phone.getText().toString();
-        final String name = perfect_name.getText().toString();
-        final boolean isPhone = BaseTool.isMobileNumber(phone);
-        final boolean isName = BaseTool.ChineseNameTest(name);
         choose_photo_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePhoto(0);
-                UploadBitmap uploadBitmap = new UploadBitmap(username);
-                uploadBitmap.execute(bitmap[0]);
+                choosePhoto(0,username);
+
             }
         });
         set_confirm.setOnClickListener(new View.OnClickListener() {
+
+            final String sex = man.isChecked()?"男":"女";
+            final String phone = perfect_phone.getText().toString();
+            final String name = perfect_name.getText().toString();
+            final boolean isPhone = BaseTool.isMobileNumber(phone);
+            final boolean isName = BaseTool.ChineseNameTest(name);
             @Override
             public void onClick(View v) {
+
                 if(!isName&&isPhone){
-                    MessageBox.showMessageBox("ERROR","电话和姓名都不合法",true).show();
+                    MessageBox.showMessageBox(perfect_information_user.this,"ERROR","电话和姓名都不合法",true).show();
                 }
                 else if(!isName){
-                    MessageBox.showMessageBox("ERROR","姓名不合法",true).show();
+                    MessageBox.showMessageBox(perfect_information_user.this,"ERROR","姓名不合法",true).show();
                 }
                 else if(!isPhone){
-                    MessageBox.showMessageBox("ERROR","电话号码不合法",true).show();
+                    MessageBox.showMessageBox(perfect_information_user.this,"ERROR","电话号码不合法",true).show();
                 }
                 else{
+                    if(bitmap[0]!=null) {
+                        UploadBitmap uploadBitmap = new UploadBitmap(username);
+                        uploadBitmap.execute(bitmap[0]);
+                    }
+                    else{
+                      MessageBox.showMessageBox(perfect_information_user.this,"提示","请选择头像",true).show();
+                        return;
+                    }
                     UserX updateUser = new UserX();
                     updateUser.setUsername(username);
                     updateUser.setUser_sex(sex);
@@ -81,6 +91,7 @@ public class perfect_information_user extends PhotoGetter {
                     updateUser.setUser_name(name);
                     PerfectInfoUserX perfectInfoUserX = new PerfectInfoUserX();
                     perfectInfoUserX.execute(updateUser);
+
                 }
             }
         });

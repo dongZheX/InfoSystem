@@ -17,13 +17,15 @@ import com.dongzhex.someactivities.infosystem.R;
 
 public class popMenu extends PopupWindow {
     private Context mContext;
-
+    private View.OnClickListener itemsOnClick;
     private View view;
 
-    private Button btn_edit, btn_delete, btn_cancel;
+    public Button btn_edit, btn_delete, btn_cancel;
 
-
-    public popMenu(Context mContext, View.OnClickListener itemsOnClick) {
+    public void setClick(View.OnClickListener listener){
+        itemsOnClick = listener;
+    }
+    public popMenu(Context mContext) {
 
         this.view = LayoutInflater.from(mContext).inflate(R.layout.popmenu_info, null);
 

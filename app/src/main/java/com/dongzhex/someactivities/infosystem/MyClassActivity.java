@@ -1,15 +1,23 @@
 package com.dongzhex.someactivities.infosystem;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
+
+import com.dongzhex.NomalService.Myapplication;
+import com.dongzhex.entity.MyClass;
+import com.dongzhex.webservice.getMyClassInfo;
+
 public class MyClassActivity extends AppCompatActivity {
     private TextView Class_id;
     private TextView Class_name;
     private TextView Class_num;
+    private MyClass myClass;
+    private String classString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +32,13 @@ public class MyClassActivity extends AppCompatActivity {
         if(actionBar !=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        SharedPreferences sharedPreferences1 = Myapplication.getRealContext().getSharedPreferences("presentUser",MODE_PRIVATE);
+        classString = sharedPreferences1.getString("Class_id","");
+        getMyClassInfo getMyClassInfos = new getMyClassInfo(myClass);
+        getMyClassInfos.execute(classString);
+        Class_name.setText(myClass.getClassName());
+        Class_id.setText(myClass.getClass_id());
+        Class_id.setText(myClass.getCount()+"");
     }
 
     @Override

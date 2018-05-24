@@ -3,10 +3,11 @@ package com.dongzhex.webservice;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.dongzhex.NomalService.BaseTool;
 import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.Info;
+import com.dongzhex.entity.successListener;
 import com.dongzhex.jsonService.JsonService;
 
 import java.io.BufferedReader;
@@ -27,9 +28,10 @@ public class RequestNotificationList extends AsyncTask<String,Integer,Integer> {
     List<Info> list;
     String urlString = NetUnit.URL+"/infoSystem/RequestNotificationList";
     private static final String TAG = "RequestNotificationList";
-    public RequestNotificationList(List<Info> list) {
+    successListener sl;
+    public RequestNotificationList(successListener e) {
         
-        this.list = list;
+        sl = e;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class RequestNotificationList extends AsyncTask<String,Integer,Integer> {
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            BaseTool.initConn(conn);
+            NetUnit.initConn(conn);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(class_id);
@@ -59,17 +61,21 @@ public class RequestNotificationList extends AsyncTask<String,Integer,Integer> {
             }
             jsonBack = builder.toString();
             list = JsonService.jsonToList(jsonBack,Info.class);
-
+            return 1;
         } catch (Exception e) {
             e.printStackTrace();
             list = null;
-            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+            MessageBox.showMessageBox(Myapplication.getRealContext(),"警告","系统错误，请联系管理员",true).show();
+            return 0;
         }
-        return 0;
+
     }
 
     @Override
     protected void onPostExecute(Integer integer) {
+        if(integer == 1){
+            sl.successInfo(list);
+        }
         super.onPostExecute(integer);
     }
 }

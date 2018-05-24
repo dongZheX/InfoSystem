@@ -26,4 +26,9 @@
         android:title="寻求帮助"
         android:icon="@drawable/request_help_item_image"
         />
+    <item
+        android:id="@+id/exit"
+        android:title="退出登录"
+        android:icon="@drawable/request_help_item_image"
+        />
 </menu>

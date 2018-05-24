@@ -23,16 +23,19 @@ public class InsertInfoDialog extends Dialog {
     public EditText text_content;
     private String buttonString;
     private View.OnClickListener mClickListener;
+    public void setListener(View.OnClickListener listener){
+        mClickListener = listener;
+    }
     public InsertInfoDialog(Activity context,String s) {
         super(context);
         this.context = context;
         buttonString = s;
     }
 
-    public InsertInfoDialog(Activity context, int theme, View.OnClickListener clickListener,String s) {
+    public InsertInfoDialog(Activity context, int theme,String s) {
         super(context, theme);
         this.context = context;
-        this.mClickListener = clickListener;
+
         buttonString = s;
     }
     @Override

@@ -1,8 +1,9 @@
-package com.dongzhex.someactivities.infosystem;
+package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
-import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 
 import java.io.BufferedReader;
@@ -45,21 +46,27 @@ public class publishInfoWebService extends AsyncTask<String,Integer,Integer>{
             conn.connect();
             if(conn.getResponseCode()== 200){
                 String result = bufferedReader.readLine();
+                bufferedReader.close();
+                bufferedWriter.close();
+                in.close();
+                out.close();
                 return Integer.parseInt(result);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return 0;
     }
 
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer == 1){
-            MessageBox.showMessageBox("提示","发布成功",true).show();
+            Toast.makeText(Myapplication.getRealContext(), "成功：15650111502", Toast.LENGTH_SHORT).show();
         }
         else{
-            MessageBox.showMessageBox("提示","发布失败",true).show();
+            Toast.makeText(Myapplication.getRealContext(), "发布失败", Toast.LENGTH_SHORT).show();
         }
         super.onPostExecute(integer);
     }

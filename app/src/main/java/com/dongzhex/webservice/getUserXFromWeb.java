@@ -1,8 +1,11 @@
 package com.dongzhex.webservice;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.dongzhex.NomalService.BaseTool;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.UserX;
 import com.dongzhex.jsonService.JsonService;
@@ -16,6 +19,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.ContentValues.TAG;
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by ASUS on 2018/5/17.
  */
@@ -24,8 +30,8 @@ public class getUserXFromWeb extends AsyncTask<String,Integer,Integer>{
     UserX userX1;
     UserX user;
     String urlS = NetUnit.URL+"/InfoSystem/ReturnContantList";
-    public getUserXFromWeb(UserX userx) {
-        this.user = userx;
+    public getUserXFromWeb() {
+
     }
 
     @Override
@@ -41,7 +47,7 @@ public class getUserXFromWeb extends AsyncTask<String,Integer,Integer>{
             OutputStream out;
             URL url = new URL(urlS);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            BaseTool.initConn(conn);
+            NetUnit.initConn(conn);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(username);
@@ -67,6 +73,7 @@ public class getUserXFromWeb extends AsyncTask<String,Integer,Integer>{
 
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(Myapplication.getRealContext(), "失败,请联系管理员：15650111502", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -76,7 +83,11 @@ public class getUserXFromWeb extends AsyncTask<String,Integer,Integer>{
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer == 1){
-            user = userX1;
+            SharedPreferences share = Myapplication.getRealContext().getSharedPreferences("tempData",MODE_PRIVATE);
+            final SharedPreferences.Editor  editors = share.edit();
+            Log.d(TAG, JsonService.javabeanToJson(userX1));
+            editors.putString("data2",JsonService.javabeanToJson(userX1));
+            editors.apply();
         }
         super.onPostExecute(integer);
     }

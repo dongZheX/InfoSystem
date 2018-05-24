@@ -36,6 +36,12 @@ public class User extends DataSupport{
         power = 0;
         Class_id = null;
     }
+    public User (User s){
+        this.power=s.getPower();
+        this.username =s.getUsername();
+        this.password = s.getPassword();
+
+    }
 
     public String getClass_id() {
 
@@ -64,7 +70,18 @@ public class User extends DataSupport{
     public void setPower(int power) {
         this.power = power;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean textPass(String data){
+       // Log.d("text", password);
         return data.equals(password);
+
     }
 }

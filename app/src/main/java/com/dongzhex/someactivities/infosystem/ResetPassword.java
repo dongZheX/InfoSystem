@@ -60,7 +60,7 @@ public class ResetPassword extends AppCompatActivity {
                 String oldPass = old_pass.getText().toString();
                 String newPass = new_pass.getText().toString();
                 if(oldPass.equals(newPass)){
-                    MessageBox.showMessageBox("警告","新密码和旧密码一致",true);
+                    MessageBox.showMessageBox(Myapplication.getRealContext(),"警告","新密码和旧密码一致",true);
                 }
                 else if(textPass(oldPass)&&textPass(newPass)){
                     ResetPassWebService resetPassWebService = new ResetPassWebService();

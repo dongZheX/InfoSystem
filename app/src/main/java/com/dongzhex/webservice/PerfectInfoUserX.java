@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.dongzhex.NomalService.BaseTool;
-import com.dongzhex.NomalService.MessageBox;
 import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.UserX;
@@ -46,7 +44,7 @@ public class PerfectInfoUserX extends AsyncTask<UserX,Integer,Integer> {
         try {
             URL urlT = new URL(url);
             HttpURLConnection conn = (HttpURLConnection)urlT.openConnection();
-            BaseTool.initConn(conn);
+            NetUnit.initConn(conn);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             jsonData = JsonService.javabeanToJson(userX);
@@ -69,7 +67,7 @@ public class PerfectInfoUserX extends AsyncTask<UserX,Integer,Integer> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+            Toast.makeText(Myapplication.getRealContext(), "失败,请联系管理员：15650111502", Toast.LENGTH_SHORT).show();
         }
         return null;
     }

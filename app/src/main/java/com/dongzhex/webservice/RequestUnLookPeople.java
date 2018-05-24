@@ -1,9 +1,10 @@
-package com.dongzhex.someactivities.infosystem;
+package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.dongzhex.NomalService.NetUnit;
+import com.dongzhex.entity.slStringInterface;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,19 +14,21 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by ASUS on 2018/5/21.
  */
 
 public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
+    private
     String urls = NetUnit.URL+"/InfoSystem/ReturnUnLookPeople";
     private static final String TAG = "RequestUnLookPeople";
-    private String[] datas;
+    private List<String> datas;
     private String line,data;
-
-    public RequestUnLookPeople(String[] datas) {
-        this.datas = datas;
+    slStringInterface sl;
+    public RequestUnLookPeople(slStringInterface sk) {
+        sl = sk;
     }
 
     @Override
@@ -70,9 +73,13 @@ public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
 
     @Override
     protected void onPostExecute(Integer integer) {
+        String[] d = data.split("/");
         if(integer==1){
-            datas = data.split("/");
+            for(int i = 0;i<d.length;i++){
+                datas.add(d[i]);
+            }
         }
+        sl.success(datas);
         super.onPostExecute(integer);
     }
 }

@@ -1,8 +1,9 @@
-package com.dongzhex.someactivities.infosystem;
+package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
-import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.MyClass;
 
@@ -11,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -20,9 +22,9 @@ import java.net.URL;
 
 public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
     String urls = NetUnit.URL+"/InfoSystem/getMyClassInfo";
-    private MyClass myclass;
+    public  MyClass myclass;
     String class_name;
-    String class_count;
+    int class_count;
     String class_id;
 
     public getMyClassInfo(MyClass myclass) {
@@ -43,7 +45,7 @@ public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
             NetUnit.initConn(conn);
             //载入数据
             out = conn.getOutputStream();
-            bufferedWriter = new BufferedWriter(new BufferedWriter(out));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(class_id);
             conn.connect();
             in = conn.getInputStream();
@@ -51,12 +53,13 @@ public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
             String data = bufferedReader.readLine();
             String results[] = data.split("/");
             class_name = results[0];
-            class_count = results[1];
+            class_count = Integer.parseInt(results[1]);
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
-            MessageBox.showMessageBox("警告","错误提示BUG来自getMyClassInfo",true).show();
-            return 0
+            Toast.makeText(Myapplication.getRealContext(), "失败,请联系管理员：15650111502", Toast.LENGTH_SHORT).show();
+
+            return 0;
         }
 
     }
@@ -64,7 +67,7 @@ public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer == 1){
-            myclass = new Class(class_name,class_id,class_count);
+            myclass = new MyClass(class_name,class_id,class_count);
         }
         super.onPostExecute(integer);
     }

@@ -19,14 +19,12 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             >
             <TextView
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="完善信息"
                 android:textSize="21dp"
                 android:textColor="#FFFF"
-                android:layout_marginLeft="148dp"
-                android:gravity="center_vertical"/>
+                android:layout_gravity="center"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
     <!--头像-->
@@ -109,6 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="男"
+                    android:checked="true"
                     android:textSize="20dp"/>
                 <RadioButton
                     android:gravity="center"

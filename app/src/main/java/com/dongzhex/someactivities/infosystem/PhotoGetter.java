@@ -16,7 +16,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -50,7 +49,7 @@ public class PhotoGetter extends AppCompatActivity {
     protected int counT;
 
     protected String Path;
-
+    String userName;
     Uri imageUri;
 
 
@@ -102,7 +101,7 @@ public class PhotoGetter extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= 24) {
 
-            imageUri = FileProvider.getUriForFile(PhotoGetter.this, "com.example.loginwithweb.fileprovider", imageFile);
+           // imageUri = FileProvider.getUriForFile(PhotoGetter.this, "com.dongzhex.someactivities.infosystem.perfect_information_user", imageFile);
 
             //可以想这是一个为imageFile开辟的提供器共享给外界，外界可以利用这个提供器来对imageFIle进行操作
 
@@ -122,12 +121,12 @@ public class PhotoGetter extends AppCompatActivity {
 
     }
 
-    public void choosePhoto(int count) {
+    public void choosePhoto(int count,String username) {
 
         //SD卡读写能力
 
         counT = count;
-
+        userName = username;
         if (ContextCompat.checkSelfPermission(PhotoGetter.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(PhotoGetter.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);

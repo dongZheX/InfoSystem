@@ -2,10 +2,11 @@ package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
 
-import com.dongzhex.NomalService.BaseTool;
 import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.UserX;
+import com.dongzhex.entity.successListener;
 import com.dongzhex.jsonService.JsonService;
 
 import java.io.BufferedReader;
@@ -23,11 +24,11 @@ import java.util.List;
  */
 
 public class RequestContantList extends AsyncTask<String,Integer,Integer> {
-    List<UserX> mylist;
+    successListener st;
     List<UserX> list;
     String urlS = NetUnit.URL+"/InfoSystem/ReturnContantList";
-    public RequestContantList(List<UserX> mlist) {
-        this.mylist = mlist;
+    public RequestContantList(successListener sl) {
+        st = sl;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class RequestContantList extends AsyncTask<String,Integer,Integer> {
             OutputStream out;
             URL url = new URL(urlS);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            BaseTool.initConn(conn);
+            NetUnit.initConn(conn);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(Class_id);
@@ -62,7 +63,7 @@ public class RequestContantList extends AsyncTask<String,Integer,Integer> {
 
         } catch (Exception e) {
             e.printStackTrace();
-            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+            MessageBox.showMessageBox(Myapplication.getRealContext(),"警告","系统错误，请联系管理员",true).show();
         }
 
         return null;
@@ -70,9 +71,10 @@ public class RequestContantList extends AsyncTask<String,Integer,Integer> {
 
     @Override
     protected void onPostExecute(Integer integer) {
-        if(integer == 1){
-            mylist = list;
-        }
         super.onPostExecute(integer);
+        if(integer == 1){
+            st.successUserX(list);
+        }
+
     }
 }

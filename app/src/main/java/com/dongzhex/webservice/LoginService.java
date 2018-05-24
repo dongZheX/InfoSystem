@@ -1,11 +1,13 @@
 package com.dongzhex.webservice;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.dongzhex.NomalService.MessageBox;
+import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.User;
+import com.dongzhex.entity.successListener;
 import com.dongzhex.jsonService.JsonService;
 
 import java.io.BufferedReader;
@@ -17,44 +19,47 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by ASUS on 2018/4/26.
  */
 
-public class LoginService extends AsyncTask<String,User,User> {
+public class LoginService extends AsyncTask<String,Integer,Integer> {
     private static final String TAG = "LoginService";
     private String username;
     private String password;
     private User backUser;
-    private User need;
-
-    public LoginService(User need) {
-        this.need = need;
+    successListener cc;
+    public LoginService(successListener c) {
+        cc = c;
     }
 
     @Override
-    protected User doInBackground(String... params) {
+    protected Integer doInBackground(String... params) {
         username = params[0];
         password = params[1];
         User user = new User(username,password);
+        Log.d(TAG, "doInBackground: ");
         //服务器地址
-        String connecturl = NetUnit.URL+"/InfoSystem/LoginService";
+        String connecturl = NetUnit.URL+"/InfoSystem/LoginServlet";
         try {
             //可以代码服用，暂不复用
             URL url = new URL(connecturl);
             String jsonUser,jsonBack;
-            HttpURLConnection conn = (HttpURLConnection) url.getContent();
-            OutputStream out = conn.getOutputStream();
-            BufferedWriter bufferWriter =  new BufferedWriter(new OutputStreamWriter(out));
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             jsonUser = JsonService.javabeanToJson(user);
-            bufferWriter.write(jsonUser);
             conn.setRequestMethod("POST");
             conn.setReadTimeout(1000);
             conn.setConnectTimeout(1000);
             conn.setDoInput(true);
             conn.setDoInput(true);
+            OutputStream out = conn.getOutputStream();
+            BufferedWriter bufferWriter =  new BufferedWriter(new OutputStreamWriter(out));
+            bufferWriter.write(jsonUser);
+            bufferWriter.flush();
             conn.connect();
-            if(conn.getResponseCode()==200) {
+            if(conn.getResponseCode()==conn.getResponseCode()) {
                 Log.d(TAG, "连接成功");
                 InputStream inputStream = conn.getInputStream();
                 BufferedReader bufferReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -64,23 +69,33 @@ public class LoginService extends AsyncTask<String,User,User> {
                     builder.append(line);
                 }
                 jsonBackData = builder.toString();
+                Log.d(TAG, jsonBackData);
                 backUser = JsonService.jsonToJavaBean(jsonBackData,User.class);
 
-
+                return 1;
             }
         } catch (Exception e) {
-            MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+           // MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
+            Log.d(TAG, "系统错误，请联系管理员");
             e.printStackTrace();
         }
 
 
-        return null;
+        return 1;
     }
 
-    @Override
-    protected void onPostExecute(User s) {
-        need = s;
-        super.onPostExecute(s);
 
+
+    @Override
+    protected void onPostExecute(Integer s) {
+        super.onPostExecute(s);
+        if(s==1) {
+            SharedPreferences share = Myapplication.getRealContext().getSharedPreferences("tempData",MODE_PRIVATE);
+            final SharedPreferences.Editor  editors = share.edit();
+            Log.d(TAG, JsonService.javabeanToJson(backUser));
+            editors.putString("data1",JsonService.javabeanToJson(backUser));
+            editors.apply();
+
+        }
     }
 }

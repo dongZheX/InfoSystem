@@ -32,7 +32,7 @@ public class InfoContentActivity extends AppCompatActivity {
         Author_Text = (TextView)findViewById(R.id.info_person);
         Time_Text = (TextView)findViewById(R.id.info_date);
         Content_Text = (TextView)findViewById(R.id.notification_content_text);
-
+        InitContent();
     }
 
     @Override
@@ -45,8 +45,12 @@ public class InfoContentActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.looked_num_item_wei:
-                //未实现
+            {   Intent intent = new Intent(this,UnLookInfoActivity.class);
+                intent.putExtra("Info_id",info.getInfo_id());
+                startActivity(intent);
                 break;
+            }
+
             case R.id.looked_num_item_yi:
                 //未实现
                 break;

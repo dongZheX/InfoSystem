@@ -2,11 +2,13 @@ package com.dongzhex.entity;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.Serializable;
+
 /**
  * Created by ASUS on 2018/4/12.
  */
 
-public class UserX extends DataSupport{
+public class UserX extends DataSupport implements Serializable{
     private String Username = "";       //用户名
     private String User_name = "";      //姓名
     private String Class_id = "";       //班级号

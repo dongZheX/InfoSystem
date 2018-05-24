@@ -46,6 +46,7 @@
             <Button
                 android:id="@+id/personal_choose_photo"
                 android:background="@drawable/button_style"
+                android:focusable="false"
                 android:text="选择图片...."
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"

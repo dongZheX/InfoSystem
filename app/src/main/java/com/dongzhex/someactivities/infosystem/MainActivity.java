@@ -1,5 +1,7 @@
 package com.dongzhex.someactivities.infosystem;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,6 +25,8 @@ import com.dongzhex.entity.UserX;
 import com.dongzhex.fragments_main.ClassContactFragment;
 import com.dongzhex.fragments_main.NotificationFragment;
 import com.dongzhex.fragments_main.ViewResourceFragment;
+import com.dongzhex.jsonService.JsonService;
+import com.dongzhex.webservice.LoginService;
 import com.dongzhex.webservice.getUserXFromWeb;
 
 import java.util.ArrayList;
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout mdrawerLayout;
     private CircleImageView circleImageView;
-
+    final SharedPreferences share = getSharedPreferences("tempData",MODE_PRIVATE);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +68,20 @@ public class MainActivity extends AppCompatActivity {
         //初始化配置
         SharedPreferences sharedPreferences1 = Myapplication.getRealContext().getSharedPreferences("presentUser",MODE_PRIVATE);
         username = sharedPreferences1.getString("Username","");
-        getUserXFromWeb getUserX = new getUserXFromWeb(userx);
+
+        getUserXFromWeb getUserX = new getUserXFromWeb();
         getUserX.execute(username);
+
+        //进行延迟处理
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String data = share.getString("data2","").replaceAll("\\\\","");
+        if(!data.equals(""))
+        userx = JsonService.jsonToJavaBean(data,UserX.class);
+        //上面使用最新技术，存在延迟问题
         //配置左上按钮
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null) {
@@ -76,7 +92,13 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView)findViewById(R.id.nav_view);
         mdrawerLayout = (DrawerLayout)findViewById(R.id.drawer);
         circleImageView = (CircleImageView)navigationView.findViewById(R.id.icon_image);
-        String image = NetUnit.URL+"InfoSystem"+userx.getUser_image();
+        String image = null;
+        if(userx!=null) {
+           image = NetUnit.URL + "/InfoSystem" + userx.getUser_image();
+        }else{
+            data = share.getString("data2","").replaceAll("\\\\","");
+            userx = JsonService.jsonToJavaBean(data,UserX.class);
+        }
         if(userx.getUser_image()!=null&&userx.getUser_image()!=""){
             Glide.with(MainActivity.this).load(image).into(circleImageView);
 
@@ -104,6 +126,14 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.personal_item:
                     {
                         Intent intent = new Intent(MainActivity.this,Personal_Center.class);
+                        if(userx!=null){
+                            intent.putExtra("userx",userx);
+                        }
+                        else{
+                            String data = share.getString("data2","").replaceAll("\\\\","");
+                            userx = JsonService.jsonToJavaBean(data,UserX.class);
+                            intent.putExtra("userx",userx);
+                        }
                         mdrawerLayout.closeDrawers();
                         startActivity(intent);
                         break;
@@ -116,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case R.id.change_pass_item:{
                         Intent intent = new Intent(MainActivity.this,ResetPassword.class);
+                        intent.putExtra("userx",userx);
                         mdrawerLayout.closeDrawers();
                         startActivity(intent);
                         break;
@@ -130,6 +161,32 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this,HelpActivity.class);
                         mdrawerLayout.closeDrawers();
                         startActivity(intent);
+                        break;
+                    }
+                    case R.id.exit:{
+                        final Intent intent = new Intent(MainActivity.this,LoginService.class);
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setCancelable(true);
+                        builder.setMessage("您确定要退出？");
+                        builder.setTitle("提示");
+                        builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences mainSetting = getSharedPreferences("mainSetting",MODE_PRIVATE);
+                                SharedPreferences.Editor ed = mainSetting.edit();
+                                ed.putBoolean("isLogin",false);
+                                startActivity(intent);
+                            }
+                        });
+                        builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        builder.show();
+                        mdrawerLayout.closeDrawers();
+
                         break;
                     }
                 }

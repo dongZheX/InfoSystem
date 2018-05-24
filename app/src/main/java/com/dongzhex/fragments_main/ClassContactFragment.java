@@ -19,7 +19,10 @@ import android.widget.Toast;
 
 import com.dongzhex.AdapterPack.UserXAdapter;
 import com.dongzhex.NomalService.Myapplication;
+import com.dongzhex.entity.Info;
+import com.dongzhex.entity.User;
 import com.dongzhex.entity.UserX;
+import com.dongzhex.entity.successListener;
 import com.dongzhex.someactivities.infosystem.R;
 import com.dongzhex.webservice.RequestContantList;
 
@@ -37,6 +40,7 @@ public class ClassContactFragment extends Fragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String Class_id;
+    private successListener sl;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,15 +63,56 @@ public class ClassContactFragment extends Fragment {
     }
     //初始化
     private void initmlist(){
-        RequestContantList requestContantList = new RequestContantList(mlist);
+        sl = new successListener() {
+            @Override
+            public void success(User x) {
+
+            }
+
+            @Override
+            public void success(String x) {
+
+            }
+
+            @Override
+            public void successInfo(List<Info> mlist) {
+
+            }
+
+            @Override
+            public void successUserX(List<UserX> mlist) {
+                UserXAdapter userXAdapter = new UserXAdapter(mlist);
+                recyclerView.setAdapter(userXAdapter);
+            }
+        };
+        RequestContantList requestContantList = new RequestContantList(sl);
         requestContantList.execute(Class_id);
     }
     private void setSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                initmlist();
-                recyclerView.getAdapter().notifyDataSetChanged();
+                onRefresh();
+            }
+        });
+    }
+    private void onRefresh(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initmlist();
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
             }
         });
     }
