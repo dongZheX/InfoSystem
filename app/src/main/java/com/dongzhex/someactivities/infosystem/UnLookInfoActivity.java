@@ -1,9 +1,11 @@
 package com.dongzhex.someactivities.infosystem;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import com.dongzhex.AdapterPack.NameStringAdapter;
 import com.dongzhex.entity.slStringInterface;
@@ -20,11 +22,19 @@ public class UnLookInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_un_look_info);
         String Info_id = getIntent().getStringExtra("Info_id");
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.nameRecycler);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         slStringInterface sl = new slStringInterface() {
             @Override
-            public void success(List<String> list) {
-                NameStringAdapter nameStringAdapters = new NameStringAdapter(mlist);
-                recyclerView.setAdapter(nameStringAdapters);
+            public void success(String s) {
+                    String[] d = s.split("/");
+                    for(int i = 0;i<d.length;i++){
+                        mlist.add(d[i]);
+                    }
+                if(mlist!=null) {
+                    NameStringAdapter nameStringAdapters = new NameStringAdapter(mlist,UnLookInfoActivity.this);
+                    recyclerView.setAdapter(nameStringAdapters);
+                }
             }
         };
         RequestUnLookPeople unLookPeople = new RequestUnLookPeople(sl);
@@ -38,5 +48,13 @@ public class UnLookInfoActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         this.finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+          finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -341,12 +341,12 @@ public class PhotoGetter extends AppCompatActivity {
 
         Path = path;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        Bitmap bitmaps = BitmapFactory.decodeFile(path);
 
         System.out.println(path);
 
         Glide.with(Myapplication.getRealContext()).load(path).into(circleImageView[counT]);
-
+        bitmap[0] = bitmaps;
 
 
 

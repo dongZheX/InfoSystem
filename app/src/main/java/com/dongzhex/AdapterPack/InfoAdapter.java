@@ -1,6 +1,7 @@
 package com.dongzhex.AdapterPack;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
@@ -34,6 +35,7 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
     private List<Info> mlist;
     private  int POWER;
     private Activity act;
+    Context context;
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView title;  //通知标题
         TextView author;    //通知作者
@@ -50,15 +52,16 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
         }
     }
 
-    public InfoAdapter(List<Info> mlist,int power,Activity activity) {
+    public InfoAdapter(List<Info> mlist,int power,Activity activity,Context context) {
         this.mlist = mlist;
         this.POWER = power;
         act = activity;
+        this.context = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_notification,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -124,7 +127,7 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Myapplication.getRealContext(), InfoContentActivity.class);
-                intent.putExtra("CLass_id",info.getClass_id());
+                intent.putExtra("Class_id",info.getClass_id());
                 intent.putExtra("Info_id",info.getInfo_id());
                 intent.putExtra("title",info.getInfo_title());
                 intent.putExtra("content",info.getInfo_content());

@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.dongzhex.entity.Info;
 import com.dongzhex.entity.User;
 import com.dongzhex.entity.UserX;
 import com.dongzhex.entity.successListener;
+import com.dongzhex.jsonService.JsonService;
 import com.dongzhex.someactivities.infosystem.R;
 import com.dongzhex.webservice.RequestContantList;
 
@@ -41,19 +43,19 @@ public class ClassContactFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private String Class_id;
     private successListener sl;
+    private static final String TAG = "ClassContactFragment";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.class_contact_layout,container,false);
+        view = inflater.inflate(R.layout.class_contact_layout,container,false);
         recyclerView = (RecyclerView)view.findViewById(R.id.contact_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.refresh_contact);
         setSwipeRefreshLayout();//设置刷新事件
-        initmlist();
-        UserXAdapter userXAdapter = new UserXAdapter(mlist);
-        recyclerView.setAdapter(userXAdapter);//设置列表
         SharedPreferences sharedPreferences1 = Myapplication.getRealContext().getSharedPreferences("presentUser",MODE_PRIVATE);
         Class_id = sharedPreferences1.getString("Class_id","");//读取配置
+        Log.d(TAG, Class_id);
+        initmlist();
         //权限申请
         if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CALL_PHONE},1);
@@ -71,18 +73,23 @@ public class ClassContactFragment extends Fragment {
 
             @Override
             public void success(String x) {
-
+                Log.d(TAG, x);
+                mlist = JsonService.jsonToList(x,UserX.class);
+                if(mlist!=null) {
+                    UserXAdapter userXAdapter = new UserXAdapter(mlist, view.getContext(),getActivity());
+                    recyclerView.setAdapter(userXAdapter);
+                }
             }
 
             @Override
             public void successInfo(List<Info> mlist) {
 
+
             }
 
             @Override
             public void successUserX(List<UserX> mlist) {
-                UserXAdapter userXAdapter = new UserXAdapter(mlist);
-                recyclerView.setAdapter(userXAdapter);
+
             }
         };
         RequestContantList requestContantList = new RequestContantList(sl);
@@ -122,7 +129,7 @@ public class ClassContactFragment extends Fragment {
         switch (requestCode){
             case 1:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
+                    Toast.makeText(getContext(),"您可以打电话",Toast.LENGTH_SHORT);
                 }
                 else{
                     Toast.makeText(getContext(),"您可能无法再本应用中启动电话",Toast.LENGTH_SHORT);

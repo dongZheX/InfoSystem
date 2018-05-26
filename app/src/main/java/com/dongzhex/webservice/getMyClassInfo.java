@@ -47,6 +47,7 @@ public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(class_id);
+            bufferedWriter.flush();
             conn.connect();
             in = conn.getInputStream();
             bufferedReader = new BufferedReader(new InputStreamReader(in));

@@ -50,7 +50,8 @@ public class LoginActivity extends AppCompatActivity {
     private boolean SuccessFlag = false;//是否登陆成功
     private static final String TAG = "LoginActivity";
     private  User presentUser = null;
-     String cc;
+    private SharedPreferences share;
+    private String trueName= "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +93,10 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "网络可用", Toast.LENGTH_SHORT).show();
 
         }
+        share = getSharedPreferences("tempData",MODE_PRIVATE);
+        SharedPreferences.Editor e = share.edit();
+        e.clear();
+        e.apply();
 
     }
     //菜单初始化
@@ -130,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String trueName= "";
+
                 string_username = username.getText().toString();
                 string_password = password.getText().toString();
                 //输出信息控制
@@ -139,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }// end if checkValidInfo
                 //保存子线程数据
-                final SharedPreferences share = getSharedPreferences("tempData",MODE_PRIVATE);
+
                 final SharedPreferences.Editor editors= share.edit();
                 successListener myLisenter = new successListener() {
                     @Override
@@ -148,7 +153,102 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void success(String x) {
+                        presentUser = JsonService.jsonToJavaBean(x,User.class);
+                        Log.d(TAG, presentUser.toString());
+                        Log.d(TAG, x);
+                        if(presentUser!=null) {
+                            trueName = presentUser.getUsername();
+                        }
+                        else{
+                            //失败退出
+                            MessageBox.showMessageBox(LoginActivity.this,"警告","网络错误",true);
+                            return;
+                        }
+                        if (isRemember) {
+                            //用户重新输入
+                            if (!mainSetting.getString("username", "").equals(string_username) || !password.getText().toString().equals(mainSetting.getString("password", ""))) {
 
+                                if (presentUser.textPass(MD5.getMD5(string_password)) && trueName.equals(string_username)) {
+                                    //记住密码但是又换了信息的检验成功
+                                    Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
+                                    if (remember_pass.isChecked()) {
+                                        SharedPreferences.Editor editor = mainSetting.edit();
+                                        editor.putBoolean("isRemember", true);
+                                        editor.putString("username", string_username);
+                                        editor.putString("password", MD5.getMD5(string_password));//可能出现错误debug
+                                        editor.apply();
+                                    }
+                                    SuccessFlag = true;
+                                }
+                            } else {
+
+                                if (presentUser.textPass(string_password) && trueName.equals(string_username)) {
+                                    Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
+                                    if (!remember_pass.isChecked()) {
+                                        SharedPreferences.Editor editor = mainSetting.edit();
+                                        editor.putBoolean("isRemember", false);
+                                        editor.putString("username", "");
+                                        editor.putString("password", "");//可能出现错误debug
+                                        editor.apply();
+                                    }
+                                    SuccessFlag = true;
+                                }
+
+                            }
+                        }//end if isRemember
+                        else{
+                            Log.d(TAG, "onClick: ");
+                            if (presentUser.textPass(MD5.getMD5(string_password)) && trueName.equals(string_username)) {
+                                Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
+                                if (remember_pass.isChecked()) {
+                                    SharedPreferences.Editor editor = mainSetting.edit();
+                                    editor.putBoolean("isRemember", true);
+                                    editor.putString("username", string_username);
+                                    editor.putString("password", MD5.getMD5(string_password));//可能出现错误debug
+                                    editor.apply();
+                                }
+                                SuccessFlag = true;
+                            }
+                        }
+
+
+
+                        if(!remember_pass.isChecked()){
+                            //记住密码取消
+                            SharedPreferences.Editor editor = mainSetting.edit();
+                            editor.clear();
+                            editor.apply();
+                        }
+                        if(SuccessFlag){
+                            int firstLogin = presentUser.getFirstLogin();
+                            String Class_id = presentUser.getClass_id();
+                            int power = presentUser.getPower();
+                            SharedPreferences presentUsers = getSharedPreferences("presentUser",MODE_PRIVATE);
+                            SharedPreferences.Editor editor1 = mainSetting.edit();
+                            SharedPreferences.Editor editor = presentUsers.edit();
+                            editor.putString("Class_id",Class_id);
+                            editor.putInt("Power",power);
+                            editor.putString("Username",trueName);
+                            editor1.putString("presentUser",trueName);
+                            editor1.putBoolean("isLogin",true);
+                            editor.apply();
+                            editor1.apply();
+                            Intent intent = null;
+                            //0第一次登陆，1不是第一次登陆
+                            if(firstLogin == 0){
+                                perfect_information_user.activityStart(LoginActivity.this,trueName);
+
+                            }
+
+                            else{
+
+                                intent = new Intent(LoginActivity.this,MainActivity.class);
+                                intent.putExtra("args1",trueName);
+                                startActivity(intent);
+                            }
+                        }else{
+                            MessageBox.showMessageBox(LoginActivity.this,"警告","密码或者用户名错误",true);
+                        }
 
                     }
 
@@ -163,109 +263,24 @@ public class LoginActivity extends AppCompatActivity {
                 LoginService loginS = new LoginService(myLisenter);
                 if(!string_password.equals("")&&!string_password.equals(""))
                 loginS.execute(string_username,string_password);
-                String data = share.getString("data1","").replaceAll( "\\\\","");
+                //Log.d(TAG, presentUser.toString());
+                /*String data;
+                data= share.getString("data1","").replaceAll( "\\\\","");
+                SharedPreferences.Editor e = share.edit();
+                e.clear();
+                e.apply();
                 Log.d(TAG, data);
                // data = data.substring(1,data.length()-1);
-                presentUser = JsonService.jsonToJavaBean(data,User.class);
+                presentUser = JsonService.jsonToJavaBean(data,User.class);*/
 
                 //得到presentsSer
                 /*参数检验*/
-                if(presentUser!=null) {
-                    trueName = presentUser.getUsername();
-                }
-                else{
-                    //失败退出
-                    MessageBox.showMessageBox(LoginActivity.this,"警告","网络错误",true);
-                        return;
-                }
+
                 //检测是否输入合法
 
 
                     //记住密码设置
-                    if (isRemember) {
-                        //用户重新输入
-                        if (!mainSetting.getString("username", "").equals(string_username) || !password.getText().toString().equals(mainSetting.getString("password", ""))) {
 
-                            if (presentUser.textPass(MD5.getMD5(string_password)) && trueName.equals(string_username)) {
-                                //记住密码但是又换了信息的检验成功
-                                Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
-                                if (remember_pass.isChecked()) {
-                                    SharedPreferences.Editor editor = mainSetting.edit();
-                                    editor.putBoolean("isRemember", true);
-                                    editor.putString("username", string_username);
-                                    editor.putString("password", MD5.getMD5(string_password));//可能出现错误debug
-                                    editor.apply();
-                                }
-                                SuccessFlag = true;
-                            }
-                        } else {
-
-                            if (presentUser.textPass(string_password) && trueName.equals(string_username)) {
-                                Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
-                                if (!remember_pass.isChecked()) {
-                                    SharedPreferences.Editor editor = mainSetting.edit();
-                                    editor.putBoolean("isRemember", false);
-                                    editor.putString("username", "");
-                                    editor.putString("password", "");//可能出现错误debug
-                                    editor.apply();
-                                }
-                                SuccessFlag = true;
-                            }
-
-                        }
-                    }//end if isRemember
-                        else{
-                        Log.d(TAG, "onClick: ");
-                            if (presentUser.textPass(MD5.getMD5(string_password)) && trueName.equals(string_username)) {
-                                Toast.makeText(LoginActivity.this, "正确", Toast.LENGTH_SHORT).show();
-                                if (remember_pass.isChecked()) {
-                                    SharedPreferences.Editor editor = mainSetting.edit();
-                                    editor.putBoolean("isRemember", true);
-                                    editor.putString("username", string_username);
-                                    editor.putString("password", MD5.getMD5(string_password));//可能出现错误debug
-                                    editor.apply();
-                                }
-                                SuccessFlag = true;
-                            }
-                        }
-
-
-
-                if(!remember_pass.isChecked()){
-                    //记住密码取消
-                    SharedPreferences.Editor editor = mainSetting.edit();
-                    editor.clear();
-                    editor.apply();
-                }
-                if(SuccessFlag){
-                    int firstLogin = presentUser.getFirstLogin();
-                    String Class_id = presentUser.getClass_id();
-                    int power = presentUser.getPower();
-                    SharedPreferences presentUsers = getSharedPreferences("presentUser",MODE_PRIVATE);
-                    SharedPreferences.Editor editor1 = mainSetting.edit();
-                    SharedPreferences.Editor editor = presentUsers.edit();
-                    editor.putString("Class_id",Class_id);
-                    editor.putInt("Power",power);
-                    editor.putString("Username",trueName);
-                    editor1.putString("presentUser",trueName);
-                    //editor1.putBoolean("isLogin",true);
-                     editor.apply();
-                    editor1.apply();
-                    Intent intent = null;
-                    //0第一次登陆，1不是第一次登陆
-                    if(firstLogin == 0){
-                        perfect_information_user.activityStart(LoginActivity.this,trueName);
-
-                    }
-
-                    else{
-
-                        intent = new Intent(LoginActivity.this,MainActivity.class);
-                        startActivity(intent);
-                    }
-                }else{
-                    MessageBox.showMessageBox(LoginActivity.this,"警告","密码或者用户名错误",true);
-                }
             }
         });
     }

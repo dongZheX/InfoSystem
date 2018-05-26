@@ -1,27 +1,37 @@
 package com.dongzhex.someactivities.infosystem;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.bumptech.glide.Glide;
 import com.dongzhex.AdapterPack.MyfragmentPageAdapter;
-import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
+import com.dongzhex.entity.Info;
+import com.dongzhex.entity.User;
 import com.dongzhex.entity.UserX;
+import com.dongzhex.entity.successListener;
 import com.dongzhex.fragments_main.ClassContactFragment;
 import com.dongzhex.fragments_main.NotificationFragment;
 import com.dongzhex.fragments_main.ViewResourceFragment;
@@ -33,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static org.litepal.LitePalApplication.getContext;
 
 public class MainActivity extends AppCompatActivity {
     private ViewPager viewPage;
@@ -48,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout mdrawerLayout;
     private CircleImageView circleImageView;
-    final SharedPreferences share = getSharedPreferences("tempData",MODE_PRIVATE);
+    private TextView textUsername;
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,21 +80,45 @@ public class MainActivity extends AppCompatActivity {
         myfragmentPageAdapter = new MyfragmentPageAdapter(getSupportFragmentManager(),fragmentList);
         viewPage.setAdapter(myfragmentPageAdapter);
         //初始化配置
-        SharedPreferences sharedPreferences1 = Myapplication.getRealContext().getSharedPreferences("presentUser",MODE_PRIVATE);
+
+        SharedPreferences sharedPreferences1 = getSharedPreferences("presentUser",MODE_PRIVATE);
         username = sharedPreferences1.getString("Username","");
+        getUserXFromWeb getUserX = new getUserXFromWeb(new successListener() {
+            @Override
+            public void success(User x) {
+            }
+            @Override
+            public void success(String x) {
+                userx = JsonService.jsonToJavaBean(x,UserX.class);
+                String image = null;
+                Log.d(TAG, userx.toString());
+                if(userx!=null)
+                image = NetUnit.URL + "/InfoSystem" + userx.getUser_image();
 
-        getUserXFromWeb getUserX = new getUserXFromWeb();
-        getUserX.execute(username);
+                if(userx!=null) {
+                    Glide.with(MainActivity.this).load(image)
+                            .error(R.drawable.morentouxiang)
+                            .centerCrop()
+                            .into(circleImageView);
+                }
+                else{
+                    Glide.with(MainActivity.this).load(R.drawable.morentouxiang)
+                            .into(circleImageView);
+                }
+                textUsername.setText(userx.getUser_name());
+            }
 
-        //进行延迟处理
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String data = share.getString("data2","").replaceAll("\\\\","");
-        if(!data.equals(""))
-        userx = JsonService.jsonToJavaBean(data,UserX.class);
+            @Override
+            public void successInfo(List<Info> mlist) {
+
+            }
+
+            @Override
+            public void successUserX(List<UserX> mlist) {
+
+            }
+        });
+
         //上面使用最新技术，存在延迟问题
         //配置左上按钮
         ActionBar actionBar = getSupportActionBar();
@@ -89,19 +127,18 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);
         }
         //初始化拖拽栏
+
         navigationView = (NavigationView)findViewById(R.id.nav_view);
         mdrawerLayout = (DrawerLayout)findViewById(R.id.drawer);
-        circleImageView = (CircleImageView)navigationView.findViewById(R.id.icon_image);
-        String image = null;
-        if(userx!=null) {
-           image = NetUnit.URL + "/InfoSystem" + userx.getUser_image();
-        }else{
-            data = share.getString("data2","").replaceAll("\\\\","");
-            userx = JsonService.jsonToJavaBean(data,UserX.class);
-        }
-        if(userx.getUser_image()!=null&&userx.getUser_image()!=""){
-            Glide.with(MainActivity.this).load(image).into(circleImageView);
+        View headView = navigationView.getHeaderView(0);//划重点
+        circleImageView = (CircleImageView)headView.findViewById(R.id.icon_image);
 
+        textUsername = (TextView)headView.findViewById(R.id.username);
+        
+        getUserX.execute(username);
+        //权限申请
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CALL_PHONE},5);
         }
         setClickNavi();
     }
@@ -126,14 +163,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.personal_item:
                     {
                         Intent intent = new Intent(MainActivity.this,Personal_Center.class);
-                        if(userx!=null){
-                            intent.putExtra("userx",userx);
+                        if(userx!=null) {
+                            intent.putExtra("userx", userx);
                         }
-                        else{
-                            String data = share.getString("data2","").replaceAll("\\\\","");
-                            userx = JsonService.jsonToJavaBean(data,UserX.class);
-                            intent.putExtra("userx",userx);
-                        }
+
                         mdrawerLayout.closeDrawers();
                         startActivity(intent);
                         break;
@@ -276,10 +309,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String image = NetUnit.URL+"InfoSystem"+userx.getUser_image();
-        if(userx.getUser_image()!=null&&userx.getUser_image()!=""){
-            Glide.with(MainActivity.this).load(image).into(circleImageView);
 
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 5:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(getContext(),"您可以打电话",Toast.LENGTH_SHORT);
+                }
+                else{
+                    Toast.makeText(getContext(),"您可能无法再本应用中启动电话",Toast.LENGTH_SHORT);
+                }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

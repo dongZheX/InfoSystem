@@ -2,10 +2,11 @@
 
 <android.support.v7.widget.CardView
     android:id="@+id/cView_contact"
+    android:layout_marginTop="5dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginLeft="8dp"
-            android:layout_width="370dp"
+
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="10dp"
             android:orientation="horizontal"
@@ -32,14 +33,14 @@
         android:layout_gravity="center"
         android:text="董喆:15650111502"/>
     <!--悬浮按钮-->
-    <android.support.design.widget.FloatingActionButton
+    <ImageButton
         android:id="@+id/call_button"
         android:layout_margin="20dp"
         app:elevation="10dp"
         android:layout_gravity="right"
 
         android:background="#ffffff"
-        android:src="@drawable/app_call_recorder"
+        android:src="@drawable/phone"
         android:scaleType="centerInside"
         android:layout_width="40dp"
         android:layout_height="40dp"/>

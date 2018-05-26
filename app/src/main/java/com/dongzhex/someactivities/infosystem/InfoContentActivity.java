@@ -27,7 +27,7 @@ public class InfoContentActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Title_Text = (TextView)findViewById(R.id.info);
+        Title_Text = (TextView)findViewById(R.id.notification_content_title);
         Look_Num_Text = (TextView)findViewById(R.id.info_looked_num);
         Author_Text = (TextView)findViewById(R.id.info_person);
         Time_Text = (TextView)findViewById(R.id.info_date);
@@ -51,9 +51,7 @@ public class InfoContentActivity extends AppCompatActivity {
                 break;
             }
 
-            case R.id.looked_num_item_yi:
-                //未实现
-                break;
+
             case android.R.id.home:
                 this.finish();
                 break;
@@ -69,7 +67,7 @@ public class InfoContentActivity extends AppCompatActivity {
         int looked_num = intent.getIntExtra("looked_num",0);
         String time = intent.getStringExtra("time");
         String content = intent.getStringExtra("content");
-        info = new Info(Class_id,Info_id,content,title,looked_num,time,author);
+        info = new Info(Class_id,Info_id,content,title,looked_8num,time,author);
         Title_Text.setText(title);
         Author_Text.setText(author);
         Look_Num_Text.setText(looked_num+"");

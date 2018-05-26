@@ -43,6 +43,7 @@ public class updateInfoWebService extends AsyncTask<String,Integer,Integer> {
             bufferedReader = new BufferedReader(new InputStreamReader(in));
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(data);
+            bufferedWriter.flush();
             conn.connect();
 
             if(conn.getResponseCode()== 200){

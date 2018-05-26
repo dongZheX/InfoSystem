@@ -20,7 +20,7 @@
             android:inputType="phone"
             android:textSize="18dp"
             android:gravity="center"/>
-        <view
+        <View
             android:layout_gravity="center"
             android:layout_width="225dp"
             android:layout_height="2dp"

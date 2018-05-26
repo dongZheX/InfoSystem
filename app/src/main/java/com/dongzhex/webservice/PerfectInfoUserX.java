@@ -20,8 +20,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by ASUS on 2018/5/3.
  * Description:完善信息
@@ -32,6 +30,7 @@ public class PerfectInfoUserX extends AsyncTask<UserX,Integer,Integer> {
     public static final int SUCCESS = 1;
     public static final int FAULT = 1;
     private UserX userX;
+    private static final String TAG = "PerfectInfoUserX";
     @Override
     protected Integer doInBackground(UserX... params) {
         userX = params[0];
@@ -46,11 +45,16 @@ public class PerfectInfoUserX extends AsyncTask<UserX,Integer,Integer> {
             HttpURLConnection conn = (HttpURLConnection)urlT.openConnection();
             NetUnit.initConn(conn);
             out = conn.getOutputStream();
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out,"GBK"));
+
+            //conn.setRequestProperty("contentType", "utf-8");
             jsonData = JsonService.javabeanToJson(userX);
+            Log.d(TAG, jsonData);
             bufferedWriter.write(jsonData);
             bufferedWriter.flush();
+
             conn.connect();
+
             if(conn.getResponseCode()==200){
                 Log.d(TAG, "d连接成功");
             }
@@ -60,6 +64,7 @@ public class PerfectInfoUserX extends AsyncTask<UserX,Integer,Integer> {
             if(result.equals("success")){
                 Log.d(TAG, "success");
                 return SUCCESS;
+
             }
             else{
                 Log.d(TAG, "fault");
@@ -67,9 +72,9 @@ public class PerfectInfoUserX extends AsyncTask<UserX,Integer,Integer> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(Myapplication.getRealContext(), "失败,请联系管理员：15650111502", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(Myapplication.getRealContext(), "失败,请联系管理员：15650111502", Toast.LENGTH_SHORT).show();
         }
-        return null;
+        return FAULT;
     }
 
     @Override

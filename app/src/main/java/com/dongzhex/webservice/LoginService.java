@@ -1,10 +1,8 @@
 package com.dongzhex.webservice;
 
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.User;
 import com.dongzhex.entity.successListener;
@@ -19,13 +17,11 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * Created by ASUS on 2018/4/26.
  */
 
-public class LoginService extends AsyncTask<String,Integer,Integer> {
+public class LoginService extends AsyncTask<String,Integer,String> {
     private static final String TAG = "LoginService";
     private String username;
     private String password;
@@ -36,7 +32,7 @@ public class LoginService extends AsyncTask<String,Integer,Integer> {
     }
 
     @Override
-    protected Integer doInBackground(String... params) {
+    protected String doInBackground(String... params) {
         username = params[0];
         password = params[1];
         User user = new User(username,password);
@@ -72,7 +68,7 @@ public class LoginService extends AsyncTask<String,Integer,Integer> {
                 Log.d(TAG, jsonBackData);
                 backUser = JsonService.jsonToJavaBean(jsonBackData,User.class);
 
-                return 1;
+                return jsonBackData;
             }
         } catch (Exception e) {
            // MessageBox.showMessageBox("警告","系统错误，请联系管理员",true).show();
@@ -81,20 +77,22 @@ public class LoginService extends AsyncTask<String,Integer,Integer> {
         }
 
 
-        return 1;
+        return "";
     }
 
 
 
     @Override
-    protected void onPostExecute(Integer s) {
+    protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if(s==1) {
-            SharedPreferences share = Myapplication.getRealContext().getSharedPreferences("tempData",MODE_PRIVATE);
+        if(s!=null&&!s.equals("")) {
+            /*SharedPreferences share = Myapplication.getRealContext().getSharedPreferences("tempData",MODE_PRIVATE);
             final SharedPreferences.Editor  editors = share.edit();
+            editors.clear();
             Log.d(TAG, JsonService.javabeanToJson(backUser));
             editors.putString("data1",JsonService.javabeanToJson(backUser));
-            editors.apply();
+            editors.apply();*/
+            cc.success(s);
 
         }
     }

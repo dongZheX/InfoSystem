@@ -16,7 +16,7 @@ public class UserX extends DataSupport implements Serializable{
     private String User_phone = "";     //联系方式
 
 
-    private String User_address;   //家庭地址
+    private String User_address="";   //家庭地址
     private String User_QQ = "";        //QQ
     private String User_image = "";     //照片
     private String birth = "";
@@ -25,6 +25,21 @@ public class UserX extends DataSupport implements Serializable{
 
     public String getBirth() {
         return birth;
+    }
+
+    @Override
+    public String toString() {
+        return "UserX{" +
+                "Username='" + Username + '\'' +
+                ", User_name='" + User_name + '\'' +
+                ", Class_id='" + Class_id + '\'' +
+                ", User_sex='" + User_sex + '\'' +
+                ", User_phone='" + User_phone + '\'' +
+                ", User_address='" + User_address + '\'' +
+                ", User_QQ='" + User_QQ + '\'' +
+                ", User_image='" + User_image + '\'' +
+                ", birth='" + birth + '\'' +
+                '}';
     }
 
     public void setBirth(String birth) {
@@ -115,4 +130,5 @@ public class UserX extends DataSupport implements Serializable{
     public void setUser_image(String user_image) {
         User_image = user_image;
     }
+
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ public class perfect_information_user extends PhotoGetter {
     private CircleImageView imageViewT;
     private Button choose_photo_button;
     private Button set_confirm;
+    private static final String TAG = "perfect_information_use";
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +44,7 @@ public class perfect_information_user extends PhotoGetter {
          choose_photo_button = (Button)findViewById(R.id.perfect_button_photo);
          man  = (RadioButton) findViewById(R.id.radio_button_man);
          woman = (RadioButton)findViewById(R.id.radio_button_woman);
-        username = getIntent().getStringExtra("args1");
+        username = getIntent().getStringExtra("args");
          set_confirm = (Button)findViewById(R.id.perfect_confirm);
          setButton();
     }
@@ -58,14 +60,14 @@ public class perfect_information_user extends PhotoGetter {
         });
         set_confirm.setOnClickListener(new View.OnClickListener() {
 
-            final String sex = man.isChecked()?"男":"女";
-            final String phone = perfect_phone.getText().toString();
-            final String name = perfect_name.getText().toString();
-            final boolean isPhone = BaseTool.isMobileNumber(phone);
-            final boolean isName = BaseTool.ChineseNameTest(name);
+
+            final boolean isPhone = true;//;
+            final boolean isName = true;
             @Override
             public void onClick(View v) {
-
+                //下策
+                boolean isPhone = BaseTool.isMobileNumber(perfect_phone.getText().toString());//;
+                boolean isName = BaseTool.ChineseNameTest(perfect_name.getText().toString());
                 if(!isName&&isPhone){
                     MessageBox.showMessageBox(perfect_information_user.this,"ERROR","电话和姓名都不合法",true).show();
                 }
@@ -79,6 +81,7 @@ public class perfect_information_user extends PhotoGetter {
                     if(bitmap[0]!=null) {
                         UploadBitmap uploadBitmap = new UploadBitmap(username);
                         uploadBitmap.execute(bitmap[0]);
+
                     }
                     else{
                       MessageBox.showMessageBox(perfect_information_user.this,"提示","请选择头像",true).show();
@@ -86,10 +89,11 @@ public class perfect_information_user extends PhotoGetter {
                     }
                     UserX updateUser = new UserX();
                     updateUser.setUsername(username);
-                    updateUser.setUser_sex(sex);
-                    updateUser.setUser_phone(phone);
-                    updateUser.setUser_name(name);
+                    updateUser.setUser_sex(man.isChecked()?"man":"women");
+                    updateUser.setUser_phone(perfect_phone.getText().toString());
+                    updateUser.setUser_name(perfect_name.getText().toString());
                     PerfectInfoUserX perfectInfoUserX = new PerfectInfoUserX();
+                    Log.d(TAG, updateUser.toString());
                     perfectInfoUserX.execute(updateUser);
 
                 }
@@ -126,9 +130,9 @@ public class perfect_information_user extends PhotoGetter {
     //启动
     public static void activityStart(Context context,String...args){
         Intent intent = new Intent(context,perfect_information_user.class);
-        for(int i = 0;i<args.length;i++){
-            intent.putExtra("args"+i+1,args[i]);
-        }
+
+            intent.putExtra("args",args[0]);
+
         context.startActivity(intent);
     }
 

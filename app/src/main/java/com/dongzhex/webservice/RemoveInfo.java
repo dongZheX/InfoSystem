@@ -40,6 +40,7 @@ public class RemoveInfo extends AsyncTask<String,Integer,Integer> {
             bufferedReader = new BufferedReader(new InputStreamReader(in));
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(data);
+            bufferedWriter.flush();
               conn.connect();
             if(conn.getResponseCode()== 200){
                 String result = bufferedReader.readLine();

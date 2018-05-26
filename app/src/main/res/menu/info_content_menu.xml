@@ -5,9 +5,5 @@
         android:title="未查看人"
         android:icon="@drawable/ic_remove_red_eye_black_48dp"
         />
-    <item
-        android:id="@+id/looked_num_item_yi"
-        android:title="已查看人"
-        android:icon="@drawable/ic_remove_red_eye_black_48dp"
-        />
+
 </menu>

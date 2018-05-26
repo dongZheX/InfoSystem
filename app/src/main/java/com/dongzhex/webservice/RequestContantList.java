@@ -1,13 +1,11 @@
 package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.dongzhex.NomalService.MessageBox;
-import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.UserX;
 import com.dongzhex.entity.successListener;
-import com.dongzhex.jsonService.JsonService;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,18 +21,20 @@ import java.util.List;
  * Created by ASUS on 2018/5/14.
  */
 
-public class RequestContantList extends AsyncTask<String,Integer,Integer> {
+public class RequestContantList extends AsyncTask<String,Integer,String> {
     successListener st;
     List<UserX> list;
+    String line,jsonBack;
     String urlS = NetUnit.URL+"/InfoSystem/ReturnContantList";
+    private static final String TAG = "RequestContantList";
     public RequestContantList(successListener sl) {
         st = sl;
     }
 
     @Override
-    protected Integer doInBackground(String... params) {
+    protected String doInBackground(String... params) {
         String Class_id = params[0];
-        String line,jsonBack;
+
         StringBuilder stringBuilder = new StringBuilder();
 
         try {
@@ -44,37 +44,45 @@ public class RequestContantList extends AsyncTask<String,Integer,Integer> {
             OutputStream out;
             URL url = new URL(urlS);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            NetUnit.initConn(conn);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
             out = conn.getOutputStream();
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out,"GBK"));
             bufferedWriter.write(Class_id);
             bufferedWriter.flush();
             bufferedWriter.close(); out.close();//关闭流
             conn.connect();
-            in = conn.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
-            while((line=bufferedReader.readLine())!=null){
-                stringBuilder.append(line);
+            if(conn.getResponseCode()==200) {
+                in = conn.getInputStream();
+                bufferedReader = new BufferedReader(new InputStreamReader(in,"GBK"));
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                jsonBack = stringBuilder.toString();
+                Log.d(TAG, jsonBack);
+                conn.disconnect();
+                return jsonBack;
             }
-            jsonBack = stringBuilder.toString();
-            list = JsonService.jsonToList(jsonBack,UserX.class);
-            conn.disconnect();
-            return 1;
 
         } catch (Exception e) {
             e.printStackTrace();
-            MessageBox.showMessageBox(Myapplication.getRealContext(),"警告","系统错误，请联系管理员",true).show();
+            Log.d(TAG, "出错");
         }
 
         return null;
     }
 
     @Override
-    protected void onPostExecute(Integer integer) {
-        super.onPostExecute(integer);
-        if(integer == 1){
-            st.successUserX(list);
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        if(s!=null) {
+            Log.d(TAG, s);
+            st.success(s);
         }
+
 
     }
 }

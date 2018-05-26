@@ -43,12 +43,17 @@ public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
         try {
             URL url = new URL(urls);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            NetUnit.initConn(conn);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
             in = conn.getInputStream();
             out = conn.getOutputStream();
             bufferedReader = new BufferedReader(new InputStreamReader(in));
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(info_id);
+            bufferedWriter.flush();
             conn.connect();
             if(conn.getResponseCode()==200){
                 Log.d(TAG, "连接成功");
@@ -73,13 +78,9 @@ public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
 
     @Override
     protected void onPostExecute(Integer integer) {
-        String[] d = data.split("/");
-        if(integer==1){
-            for(int i = 0;i<d.length;i++){
-                datas.add(d[i]);
-            }
-        }
-        sl.success(datas);
+        if(data!=null)
+
+        sl.success(data);
         super.onPostExecute(integer);
     }
 }

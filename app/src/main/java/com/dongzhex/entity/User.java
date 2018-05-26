@@ -79,6 +79,17 @@ public class User extends DataSupport{
         this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", power=" + power +
+                ", Class_id='" + Class_id + '\'' +
+                ", firstLogin=" + firstLogin +
+                '}';
+    }
+
     public boolean textPass(String data){
        // Log.d("text", password);
         return data.equals(password);

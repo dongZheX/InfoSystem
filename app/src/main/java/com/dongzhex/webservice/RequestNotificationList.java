@@ -3,12 +3,9 @@ package com.dongzhex.webservice;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.dongzhex.NomalService.MessageBox;
-import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.Info;
 import com.dongzhex.entity.successListener;
-import com.dongzhex.jsonService.JsonService;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -24,58 +21,67 @@ import java.util.List;
  * Created by ASUS on 2018/5/7.
  */
 
-public class RequestNotificationList extends AsyncTask<String,Integer,Integer> {
+public class RequestNotificationList extends AsyncTask<String,Integer,String> {
     List<Info> list;
-    String urlString = NetUnit.URL+"/infoSystem/RequestNotificationList";
+    String urlString = NetUnit.URL+"/InfoSystem/RequestNotificationList";
     private static final String TAG = "RequestNotificationList";
     successListener sl;
+    private String line,jsonBack = "";
+    StringBuilder builder = new StringBuilder();
     public RequestNotificationList(successListener e) {
         
         sl = e;
     }
 
     @Override
-    protected Integer doInBackground(String... params) {
+    protected String doInBackground(String... params) {
         String class_id = params[0];
         OutputStream out;
         InputStream in;
         BufferedReader bufferedReader;
         BufferedWriter bufferedWriter;
-        String line,jsonBack;
-        StringBuilder builder = new StringBuilder();
+
+
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            NetUnit.initConn(conn);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
             out = conn.getOutputStream();
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out,"GBK"));
             bufferedWriter.write(class_id);
+            bufferedWriter.flush();
             conn.connect();
             if(conn.getResponseCode()==200){
                 Log.d(TAG, "连接成功");
+                in = conn.getInputStream();
+                bufferedReader = new BufferedReader(new InputStreamReader(in,"GBK"));
+                while((line=bufferedReader.readLine())!=null){
+                    builder.append(line);
+                }
+                jsonBack = builder.toString();
+                System.out.println(jsonBack);
+
+                return jsonBack;
             }
-            in = conn.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
-            while((line=bufferedReader.readLine())!=null){
-                builder.append(line);
-            }
-            jsonBack = builder.toString();
-            list = JsonService.jsonToList(jsonBack,Info.class);
-            return 1;
+
         } catch (Exception e) {
             e.printStackTrace();
-            list = null;
-            MessageBox.showMessageBox(Myapplication.getRealContext(),"警告","系统错误，请联系管理员",true).show();
-            return 0;
+            Log.d(TAG, "出错");
+            return null;
         }
-
+        return null;
     }
 
     @Override
-    protected void onPostExecute(Integer integer) {
-        if(integer == 1){
-            sl.successInfo(list);
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        if(s!=null) {
+            Log.d(TAG, s);
+            sl.success(s);
         }
-        super.onPostExecute(integer);
     }
 }
