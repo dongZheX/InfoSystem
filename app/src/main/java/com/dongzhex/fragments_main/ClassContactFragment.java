@@ -49,7 +49,7 @@ public class ClassContactFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         TextView title_main = (TextView) getActivity().findViewById(R.id.main_Title);
-        title_main.setText("联系方式");
+        title_main.setText("主界面");
         view = inflater.inflate(R.layout.class_contact_layout,container,false);
         recyclerView = (RecyclerView)view.findViewById(R.id.contact_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));

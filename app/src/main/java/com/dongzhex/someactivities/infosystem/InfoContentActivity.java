@@ -37,6 +37,7 @@ public class InfoContentActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if(getSharedPreferences("presentUser",MODE_PRIVATE).getInt("Power",0)==1)
         getMenuInflater().inflate(R.menu.info_content_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }

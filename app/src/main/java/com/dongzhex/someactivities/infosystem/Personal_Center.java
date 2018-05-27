@@ -154,9 +154,7 @@ public class Personal_Center extends PhotoGetter {
         sbirth = user.getBirth();
         sQQ = user.getUser_QQ();
         sphone = user.getUser_phone();
-        if(user.getUser_image()!=null&&user.getUser_image()!="")
-        Glide.with(this)
-        . load(NetUnit.URL+"/InfoSystem"+user.getUser_image()).error(R.drawable.morentouxiang);
+
         sex = (Spinner)findViewById(R.id.sp_personal_sex);
         username = (TextView)findViewById(R.id.edit_personal_username);
         Class_id = (TextView)findViewById(R.id.edit_personal_Class_id);
@@ -170,9 +168,9 @@ public class Personal_Center extends PhotoGetter {
         image = (CircleImageView)findViewById(R.id.personal_image_circle);
         try {
             if (ssex.equals("男"))
-                sex.setSelection(1);
+                sex.setSelection(0);
             else
-                sex.setSelection(2);//可能出错
+                sex.setSelection(1);//可能出错
         }catch(Exception e){
             Log.d(TAG, "spinner出错");
         }
@@ -192,6 +190,9 @@ public class Personal_Center extends PhotoGetter {
         QQ.setText(sQQ);
         phone.setText(sphone);
         address.setText(saddress);
+        if(user.getUser_image()!=null&&user.getUser_image()!="")
+            Glide.with(this)
+                    . load(NetUnit.URL+"/InfoSystem"+user.getUser_image()).error(R.drawable.morentouxiang).into(image);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

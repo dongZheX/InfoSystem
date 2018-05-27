@@ -16,7 +16,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.dongzhex.NomalService.Myapplication;
+import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.UserX;
 
 /*
@@ -47,7 +49,7 @@ public class UserXInfoActivity extends AppCompatActivity {
         }
         initUserX();
         floatingActionButton = (FloatingActionButton)findViewById(R.id.user_info_call_button);
-
+        setButton();
 
     }
     public void initUserX(){
@@ -58,11 +60,11 @@ public class UserXInfoActivity extends AppCompatActivity {
         String Class_id = intent.getStringExtra("Class_id");
         String User_Sex = intent.getStringExtra("User_sex");
 
-        String User_phone = intent.getStringExtra("User_phone");
+        String User_phone = intent.getStringExtra("USer_phone");
         String User_QQ = intent.getStringExtra("User_QQ");
-        String User_address = intent.getStringExtra("User_adress");
+        String User_address = intent.getStringExtra("User_address");
         String User_image = intent.getStringExtra("User_image");
-        String  births  = intent.getStringExtra("birth");
+        String  births  = intent.getStringExtra("User_birth");
         //初始化控件
         name = (EditText)findViewById(R.id.userx_info_name);
         name.setText(User_name);
@@ -77,10 +79,10 @@ public class UserXInfoActivity extends AppCompatActivity {
         birth = (EditText)findViewById(R.id.userx_info_birth);
         birth.setText(births);
         user = new UserX(username,User_name,Class_id,User_Sex,User_phone,User_QQ,User_address,User_image,births);
+        user_iamge = (ImageView)findViewById(R.id.userx_info_image);
         //加载图片
         if(User_image!=null){
-            //glide into
-            //未实现
+            Glide.with(this).load(NetUnit.URL+"/InfoSystem"+User_image).error(R.drawable.morentouxiang).into(user_iamge);
         }
     }
     public void setButton(){

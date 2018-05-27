@@ -29,7 +29,7 @@ public class ViewResourceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         TextView title_main = (TextView) getActivity().findViewById(R.id.main_Title);
-        title_main.setText("资源通道");
+
         View view = inflater.inflate(R.layout.resource_entry_layout,container,false);
         initList();
         RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.resource_recycler);

@@ -63,7 +63,7 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.notification_fragment,container,false);
         TextView title_main = (TextView) getActivity().findViewById(R.id.main_Title);
-        title_main.setText("班级通知");
+        title_main.setText("主界面");
         //初始化
         
         recyclerView = (RecyclerView) view.findViewById(R.id.notification_recycler);
@@ -78,8 +78,11 @@ public class NotificationFragment extends Fragment {
         initlist();
 
         flbutton = (ImageButton) view.findViewById(R.id.add_info_floatButton);
-        if(sharedPreferences1.getInt("Power",0)==0)
-            flbutton.setVisibility(View.VISIBLE);
+        if(sharedPreferences1.getInt("Power",0)==1)
+            flbutton.setEnabled(true);
+        else{
+            flbutton.setEnabled(false);
+        }
         flbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
