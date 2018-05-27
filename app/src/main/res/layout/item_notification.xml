@@ -16,28 +16,31 @@
         android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:weightSum="1">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/notification_title_text"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
                 android:textSize="18dp"
                 android:text="科研立项开始了"
                 android:maxLines="2"
                 android:layout_margin="8dp"
-                android:layout_weight="0.94"/>
+                />
             <ImageButton
                 android:background="#ffffff"
                 android:layout_marginRight="4dp"
                 android:id="@+id/notification_menu_choose"
                 android:src="@drawable/notification_menu_choose"
                 android:layout_width="35dp"
+                android:layout_alignParentRight="true"
                 android:layout_height="35dp"
+
                 android:scaleType="centerInside"/>
-        </LinearLayout>
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"

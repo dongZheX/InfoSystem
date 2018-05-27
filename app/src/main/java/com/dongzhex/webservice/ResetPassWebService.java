@@ -1,10 +1,11 @@
 package com.dongzhex.webservice;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.dongzhex.NomalService.MessageBox;
-import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 
 import java.io.BufferedReader;
@@ -21,9 +22,14 @@ import java.net.URL;
  */
 
 public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
-    private String urls = NetUnit.URL+"InfoSystem/ResetPassword";
+    private String urls = NetUnit.URL+"/InfoSystem/ResetPassword";
     String result;
     private static final String TAG = "ResetPassWebService";
+    private Activity act;
+    public ResetPassWebService(Activity act) {
+        this.act = act;
+    }
+
     @Override
     protected Integer doInBackground(String... params) {
         String data = params[0]+"/"+params[1]+"/"+params[2];
@@ -37,13 +43,13 @@ public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
             HttpURLConnection conn =(HttpURLConnection) url.openConnection();
             NetUnit.initConn(conn);
             out = conn.getOutputStream();
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out,"GBK"));
             bufferedWriter.write(data);
             bufferedWriter.flush();
             conn.connect();
             //接受服务器数据
             in = conn.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
+            bufferedReader = new BufferedReader(new InputStreamReader(in,"GBK"));
             if(conn.getResponseCode()==200) {
 
                 result = bufferedReader.readLine();
@@ -65,10 +71,30 @@ public class ResetPassWebService extends AsyncTask<String,Integer,Integer> {
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer==1){
-            MessageBox.showMessageBox(Myapplication.getRealContext(),"提示","修改成功",true).show();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(act);
+            builder.setTitle("提示");
+            builder.setMessage("修改成功");
+            builder.setCancelable(true);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.show();
         }
         else{
-            MessageBox.showMessageBox(Myapplication.getRealContext(),"错误","修改失败，请确认原密码是否正确",true).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(act);
+            builder.setTitle("提示");
+            builder.setMessage("修改失败");
+            builder.setCancelable(true);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.show();
         }
         super.onPostExecute(integer);
     }

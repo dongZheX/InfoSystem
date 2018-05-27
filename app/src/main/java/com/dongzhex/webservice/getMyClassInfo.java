@@ -1,11 +1,10 @@
 package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
+import android.util.Log;
 
-import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
-import com.dongzhex.entity.MyClass;
+import com.dongzhex.entity.slStringInterface;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,19 +19,18 @@ import java.net.URL;
  * Created by ASUS on 2018/5/20.
  */
 
-public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
+public class getMyClassInfo extends AsyncTask<String,Integer,String> {
     String urls = NetUnit.URL+"/InfoSystem/getMyClassInfo";
-    public  MyClass myclass;
-    String class_name;
-    int class_count;
     String class_id;
-
-    public getMyClassInfo(MyClass myclass) {
-        this.myclass = myclass;
+    String data;
+    private slStringInterface st;
+    private static final String TAG = "getMyClassInfo";
+    public getMyClassInfo(slStringInterface sl) {
+        st = sl;
     }
 
     @Override
-    protected Integer doInBackground(String... params) {
+    protected String doInBackground(String... params) {
        class_id = params[0];
         try {
             //网络初次配置
@@ -42,7 +40,11 @@ public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
             BufferedWriter bufferedWriter;
             URL url = new URL(urls);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            NetUnit.initConn(conn);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
             //载入数据
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
@@ -51,25 +53,22 @@ public class getMyClassInfo extends AsyncTask<String,Integer,Integer> {
             conn.connect();
             in = conn.getInputStream();
             bufferedReader = new BufferedReader(new InputStreamReader(in));
-            String data = bufferedReader.readLine();
-            String results[] = data.split("/");
-            class_name = results[0];
-            class_count = Integer.parseInt(results[1]);
-            return 1;
+            data = bufferedReader.readLine();
+
+            return data;
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(Myapplication.getRealContext(), "失败,请联系管理员：15650111502", Toast.LENGTH_SHORT).show();
-
-            return 0;
+            Log.d(TAG, "出错");
+            return null;
         }
 
     }
 
     @Override
-    protected void onPostExecute(Integer integer) {
-        if(integer == 1){
-            myclass = new MyClass(class_name,class_id,class_count);
-        }
-        super.onPostExecute(integer);
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        if(s!=null&&!s.equals(""))
+        st.success(s);
+
     }
 }

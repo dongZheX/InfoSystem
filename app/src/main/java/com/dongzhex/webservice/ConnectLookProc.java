@@ -2,9 +2,7 @@ package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 
 import java.io.BufferedReader;
@@ -16,15 +14,13 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by ASUS on 2018/5/20.
  */
 
 public class ConnectLookProc extends AsyncTask<String,Integer,Integer> {
     String urls = NetUnit.URL + "/InfoSystem/LookRecordService";
-
+    private static final String TAG = "ConnectLookProc";
     @Override
     protected Integer doInBackground(String... params) {
         String username, infoId;
@@ -39,7 +35,11 @@ public class ConnectLookProc extends AsyncTask<String,Integer,Integer> {
             BufferedWriter bufferedWriter;
             URL url = new URL(urls);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            NetUnit.initConn(conn);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
             out = conn.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(data);
@@ -53,7 +53,7 @@ public class ConnectLookProc extends AsyncTask<String,Integer,Integer> {
                 if (result.equals("1")) {
                     Log.d(TAG, "成功");
                 } else {
-                    Toast.makeText(Myapplication.getRealContext(), "出现错误", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "出错");
                 }
 
             }
@@ -61,7 +61,7 @@ public class ConnectLookProc extends AsyncTask<String,Integer,Integer> {
             bufferedReader.close();
             bufferedWriter.close();
         } catch (Exception e) {
-            Toast.makeText(Myapplication.getRealContext(), "失败,请联系管理员：15650111502", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "出错");
 
         }
         return 0;

@@ -43,10 +43,12 @@ public class Personal_Center extends PhotoGetter {
         toolbar.setTitle("个人中心");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        onInitView();
+
         if(actionBar!=null)
             actionBar.setDisplayHomeAsUpEnabled(true);
         user = (UserX)getIntent().getSerializableExtra("userx");
+        onInitView();
+        Log.d(TAG, user.toString());
         setButton();
     }
     private void setButton(){
@@ -57,6 +59,7 @@ public class Personal_Center extends PhotoGetter {
             @Override
             public void onClick(View v) {
                 //保存
+
                 String ssex,susername,sClass_id,sname,saddress,sbirth,sQQ,sphone;
                 ssex = sex.getSelectedItem().toString();
                 susername = username.getText().toString();
@@ -70,19 +73,23 @@ public class Personal_Center extends PhotoGetter {
                 try {
                     PerfectInfoUserX service = new PerfectInfoUserX();
                     service.execute(temp);
+                    if(bitmap[4]!=null){
+                        UploadBitmap uploadBitmap = new UploadBitmap(username.getText().toString());
+                        uploadBitmap.execute(bitmap[4]);
+                    }
                 }catch (Exception e){
                     MessageBox.showMessageBox(Personal_Center.this,"bug提示","未调试的错误002",false);
                 }
                 MessageBox.showMessageBox(Personal_Center.this,"提示","保存成功",false);
-                sex.setFocusable(false);
-                name.setFocusable(false);
-                address.setFocusable(false);
-                QQ.setFocusable(false);
-                phone.setFocusable(false);
-                year.setFocusable(false);
-                mon.setFocusable(false);
-                day.setFocusable(false);
-                personal_choose_photo.setFocusable(false);
+                sex.setEnabled(false);
+                name.setEnabled(false);
+                address.setEnabled(false);
+                QQ.setEnabled(false);
+                phone.setEnabled(false);
+                year.setEnabled(false);
+                mon.setEnabled(false);
+                day.setEnabled(false);
+                personal_choose_photo.setEnabled(false);
                 edit.setText("编辑");
             }
         });
@@ -91,28 +98,33 @@ public class Personal_Center extends PhotoGetter {
             public void onClick(View v) {
                 //允许编辑
                 if(edit.getText().toString().equals("编辑")) {
-                    sex.setFocusable(true);
-                    name.setFocusable(true);
-                    address.setFocusable(true);
-                    QQ.setFocusable(true);
-                    phone.setFocusable(true);
-                    year.setFocusable(true);
-                    mon.setFocusable(true);
-                    day.setFocusable(true);
-                    personal_choose_photo.setFocusable(true);
+                    sex.setEnabled(true);
+                    name.setEnabled(true);
+                    address.setEnabled(true);
+                    QQ.setEnabled(true);
+                    phone.setEnabled(true);
+                    year.setEnabled(true);
+                    mon.setEnabled(true);
+                    day.setEnabled(true);
+
+                    personal_choose_photo.setEnabled(true);
+
                     edit.setText("取消编辑");
+                    save.setEnabled(true);
                 }
                 else{
-                    sex.setFocusable(false);
-                    name.setFocusable(false);
-                    address.setFocusable(false);
-                    QQ.setFocusable(false);
-                    phone.setFocusable(false);
-                    year.setFocusable(false);
-                    mon.setFocusable(false);
-                    day.setFocusable(false);
-                    personal_choose_photo.setFocusable(false);
+                    sex.setEnabled(false);
+                    name.setEnabled(false);
+                    address.setEnabled(false);
+                    QQ.setEnabled(false);
+                    phone.setEnabled(false);
+                    year.setEnabled(false);
+                    mon.setEnabled(false);
+                    day.setEnabled(false);
+                    personal_choose_photo.setEnabled(false);
+
                     edit.setText("编辑");
+                    save.setEnabled(false);
                 }
             }
         });
@@ -120,9 +132,9 @@ public class Personal_Center extends PhotoGetter {
             @Override
             public void onClick(View v) {
                 try {
-                    takePhoto(0);
-                    UploadBitmap uploadBitmap = new UploadBitmap(username.getText().toString());
-                    uploadBitmap.execute(bitmap[0]);
+                    circleImageView[4] = image;
+                    choosePhoto(4,userName);
+
                 }catch(Exception ex){
                     MessageBox.showMessageBox(Personal_Center.this,"bug提示","未调试的错误",false);
                 }
@@ -155,6 +167,7 @@ public class Personal_Center extends PhotoGetter {
         day = (EditText)findViewById(R.id.sp_personal_day);
         phone = (EditText)findViewById(R.id.sp_personal_phone);
         QQ = (EditText)findViewById(R.id.edit_personal_QQ);
+        image = (CircleImageView)findViewById(R.id.personal_image_circle);
         try {
             if (ssex.equals("男"))
                 sex.setSelection(1);
@@ -168,10 +181,14 @@ public class Personal_Center extends PhotoGetter {
         name.setText(sname);
         address.setText(saddress);
         //格式处理
-        birtht = sbirth.split("/");
-        year.setText(birtht[0]);
-        mon.setText(birtht[1]);
-        day.setText(birtht[2]);
+        if(birtht!=null&&!birtht.equals("")) {
+            birtht = sbirth.split("/");
+            if(birtht.length==3) {
+                year.setText(birtht[0]);
+                mon.setText(birtht[1]);
+                day.setText(birtht[2]);
+            }
+        }
         QQ.setText(sQQ);
         phone.setText(sphone);
         address.setText(saddress);

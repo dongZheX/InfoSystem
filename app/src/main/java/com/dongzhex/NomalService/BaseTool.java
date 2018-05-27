@@ -64,7 +64,7 @@ public class BaseTool {
     }
     //验
     public static boolean isMobileNumber(String mobilenumber) {
-        boolean b = false;
+
         String val =  "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17([0,1,6,7,]))|(18[0-2,5-9]))\\\\d{8}$";
         boolean isPhone =Pattern.compile(val).matcher(val).matches();
         return isPhone;

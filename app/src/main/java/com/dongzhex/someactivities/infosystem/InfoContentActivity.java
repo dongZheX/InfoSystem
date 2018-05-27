@@ -67,7 +67,7 @@ public class InfoContentActivity extends AppCompatActivity {
         int looked_num = intent.getIntExtra("looked_num",0);
         String time = intent.getStringExtra("time");
         String content = intent.getStringExtra("content");
-        info = new Info(Class_id,Info_id,content,title,looked_8num,time,author);
+        info = new Info(Class_id,Info_id,content,title,looked_num,time,author);
         Title_Text.setText(title);
         Author_Text.setText(author);
         Look_Num_Text.setText(looked_num+"");

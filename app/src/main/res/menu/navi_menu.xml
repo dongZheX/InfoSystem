@@ -12,6 +12,11 @@
         android:icon="@drawable/myclass_item_image"
         />
     <item
+        android:id="@+id/teacher_item"
+        android:title="我的老师"
+        android:icon="@drawable/morentouxiang"
+        />
+    <item
         android:id="@+id/change_pass_item"
         android:icon="@drawable/change_pass_item_image"
         android:title="修改密码"

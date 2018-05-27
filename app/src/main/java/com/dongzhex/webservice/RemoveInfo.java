@@ -1,8 +1,9 @@
 package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.dongzhex.NomalService.MessageBox;
 import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.NomalService.NetUnit;
 
@@ -15,14 +16,13 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static android.R.attr.data;
-
 /**
  * Created by ASUS on 2018/5/21.
  */
 
 public class RemoveInfo extends AsyncTask<String,Integer,Integer> {
     String urls = NetUnit.URL+"/InfoSystem/removeInfo";
+    private static final String TAG = "RemoveInfo";
     @Override
     protected Integer doInBackground(String... params) {
         String info_id = params[0];
@@ -34,14 +34,20 @@ public class RemoveInfo extends AsyncTask<String,Integer,Integer> {
         try{
             URL url = new URL(urls);
              HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-             NetUnit.initConn(conn);
-            in = conn.getInputStream();
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
+
             out = conn.getOutputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
+
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
-            bufferedWriter.write(data);
+            bufferedWriter.write(info_id);
             bufferedWriter.flush();
               conn.connect();
+            in = conn.getInputStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(in));
             if(conn.getResponseCode()== 200){
                 String result = bufferedReader.readLine();
                 return Integer.parseInt(result);
@@ -52,6 +58,7 @@ public class RemoveInfo extends AsyncTask<String,Integer,Integer> {
             out.close();
          } catch (Exception e) {
             e.printStackTrace();
+            Log.d(TAG, "出错，联系管理员吧");
          }
         return 0;
 
@@ -59,7 +66,7 @@ public class RemoveInfo extends AsyncTask<String,Integer,Integer> {
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer == 1){
-            MessageBox.showMessageBox(Myapplication.getRealContext(),"提示","删除成功",true).show();
+            Toast.makeText(Myapplication.getRealContext(), "删除成功", Toast.LENGTH_SHORT).show();
         }
         super.onPostExecute(integer);
     }

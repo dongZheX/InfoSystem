@@ -15,6 +15,32 @@ public class Info extends DataSupport{
     private int Looked_num=0;        //通知查看数1
     private String time=null;          //发布时间1
     private String Info_author=null;    //发布者
+
+    public Info(Info f) {
+        Class_id = f.getClass_id();
+        Info_id = f.getInfo_id();
+        Info_content = f.getInfo_content();
+        Info_title = f.getInfo_title();
+        Looked_num = f.getLooked_num();
+        time = f.getTime();
+        Info_author = f.getInfo_author();
+    }
+
+    @Override
+
+    public String toString() {
+        return "Info{" +
+                "Class_id='" + Class_id + '\'' +
+                ", Info_id='" + Info_id + '\'' +
+                ", Info_content='" + Info_content + '\'' +
+                ", Info_title='" + Info_title + '\'' +
+                ", Looked_num=" + Looked_num +
+                ", time='" + time + '\'' +
+                ", Info_author='" + Info_author + '\'' +
+                ", image_path='" + image_path + '\'' +
+                '}';
+    }
+
     private String image_path=null;     //图片路径
 
     public Info(String class_id, String info_id, String info_content, String info_title, int looked_num, String time, String info_author, String image_path) {

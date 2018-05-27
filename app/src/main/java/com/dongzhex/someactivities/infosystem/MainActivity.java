@@ -36,7 +36,6 @@ import com.dongzhex.fragments_main.ClassContactFragment;
 import com.dongzhex.fragments_main.NotificationFragment;
 import com.dongzhex.fragments_main.ViewResourceFragment;
 import com.dongzhex.jsonService.JsonService;
-import com.dongzhex.webservice.LoginService;
 import com.dongzhex.webservice.getUserXFromWeb;
 
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         viewPage.setAdapter(myfragmentPageAdapter);
         //初始化配置
 
-        SharedPreferences sharedPreferences1 = getSharedPreferences("presentUser",MODE_PRIVATE);
+        final SharedPreferences sharedPreferences1 = getSharedPreferences("presentUser",MODE_PRIVATE);
         username = sharedPreferences1.getString("Username","");
         getUserXFromWeb getUserX = new getUserXFromWeb(new successListener() {
             @Override
@@ -100,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
                             .error(R.drawable.morentouxiang)
                             .centerCrop()
                             .into(circleImageView);
+                    SharedPreferences.Editor editor = sharedPreferences1.edit();
+                    editor.putString("User_name",userx.getUser_name());
+                    editor.apply();
                 }
                 else{
                     Glide.with(MainActivity.this).load(R.drawable.morentouxiang)
@@ -121,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         //上面使用最新技术，存在延迟问题
         //配置左上按钮
+
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case R.id.change_pass_item:{
                         Intent intent = new Intent(MainActivity.this,ResetPassword.class);
+                        Log.d(TAG, userx.toString());
                         intent.putExtra("userx",userx);
                         mdrawerLayout.closeDrawers();
                         startActivity(intent);
@@ -196,8 +200,14 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     }
+                    case R.id.teacher_item:{
+                        Intent intent = new Intent(MainActivity.this,tearcher_Show_Activity.class);
+                        mdrawerLayout.closeDrawers();
+                        startActivity(intent);
+                        break;
+                    }
                     case R.id.exit:{
-                        final Intent intent = new Intent(MainActivity.this,LoginService.class);
+                        final Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setCancelable(true);
                         builder.setMessage("您确定要退出？");
@@ -208,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                                 SharedPreferences mainSetting = getSharedPreferences("mainSetting",MODE_PRIVATE);
                                 SharedPreferences.Editor ed = mainSetting.edit();
                                 ed.putBoolean("isLogin",false);
+                                ed.apply();
                                 startActivity(intent);
                             }
                         });
@@ -323,5 +334,29 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("提示");
+        builder.setMessage("您确定要退出登录？");
+        builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                finish();
+            }
+        });
+        builder.setNegativeButton("不", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
+
     }
 }

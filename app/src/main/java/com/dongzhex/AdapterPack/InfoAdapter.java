@@ -2,10 +2,14 @@ package com.dongzhex.AdapterPack;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,7 @@ import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.OutDialog.InsertInfoDialog;
 import com.dongzhex.OutDialog.popMenu;
 import com.dongzhex.entity.Info;
+import com.dongzhex.entity.slStringInterface;
 import com.dongzhex.someactivities.infosystem.InfoContentActivity;
 import com.dongzhex.someactivities.infosystem.R;
 import com.dongzhex.webservice.ConnectLookProc;
@@ -35,6 +40,9 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
     private List<Info> mlist;
     private  int POWER;
     private Activity act;
+    private static final String TAG = "InfoAdapter";
+   private slStringInterface st;
+
     Context context;
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView title;  //通知标题
@@ -52,11 +60,12 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
         }
     }
 
-    public InfoAdapter(List<Info> mlist,int power,Activity activity,Context context) {
+    public InfoAdapter(List<Info> mlist,int power,Activity activity,Context context,slStringInterface sl) {
         this.mlist = mlist;
         this.POWER = power;
         act = activity;
         this.context = context;
+         st=sl;
     }
 
     @Override
@@ -68,65 +77,119 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        final int p =position;
         final Info info = mlist.get(position);
         holder.title.setText(info.getInfo_title());
         holder.author.setText(info.getInfo_author());
         holder.time.setText(info.getTime());
         //按钮点击事件
         if(POWER==1){
-            holder.imageButton.setEnabled(false);
+            holder.imageButton.setEnabled(true);
+        }else{
+            //holder.imageButton.setEnabled(true);
         }
+
         holder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popMenu pop = new popMenu(Myapplication.getRealContext());
+                Log.d(TAG, "ClickImageButton");
+               final  popMenu pop = new popMenu(act);
                 final View.OnClickListener listener1 = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final Info info = mlist.get(position);
+
                         if(v.getId() == R.id.btn_edit_info)
                         {
-
+                            pop.dismiss();
+                            Log.d(TAG, info.toString());
                             //内置的弹出框
                             final InsertInfoDialog insertInfoDialog = new InsertInfoDialog(act,R.layout.infodialog,"保存");
-                            insertInfoDialog.text_title.setText(info.getInfo_title());
-                            insertInfoDialog.text_content.setText(info.getInfo_content());
-                            //点击事件
                             View.OnClickListener editListener = new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    updateInfoWebService updateInfoWebService = new updateInfoWebService();
-                                    updateInfoWebService.execute(info.getClass_id(),info.getInfo_id(),insertInfoDialog.text_title.getText().toString(),insertInfoDialog.text_title.getText().toString());
+                                    updateInfoWebService updateInfoWebService = new updateInfoWebService(new slStringInterface() {
+                                        @Override
+                                        public void success(String s) {
+                                            String t = s.equals("success")?"修改成功":"修改失败";
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(act);
+                                            builder.setTitle("提示");
+                                            builder.setCancelable(true);
+                                            builder.setMessage(t);
+                                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    st.success("s");
+
+                                                }
+                                            });
+
+                                            builder.show();
+                                        }
+                                    });
+                                    updateInfoWebService.execute(info.getClass_id(),info.getInfo_id(),insertInfoDialog.text_title.getText().toString(),insertInfoDialog.text_content.getText().toString());
                                     insertInfoDialog.cancel();
+
                                 }
                             };
                             insertInfoDialog.setListener(editListener);
+                            insertInfoDialog.show();
+                            insertInfoDialog.text_title.setText(info.getInfo_title());
+                            insertInfoDialog.text_content.setText(info.getInfo_content());
+                            //点击事件
+
+
                             //视图层改变
                             info.setInfo_content(insertInfoDialog.text_content.getText().toString());
                             info.setInfo_title(insertInfoDialog.text_title.getText().toString());
-                            mlist.set(position,info);
-                            notifyDataSetChanged();
+                            Info infos = new Info(info);
+                            mlist.set(position,infos);
+                            notifyItemChanged(position);
                         }
-                        //进行伤处
+                        //进行删除
                         else if(v.getId() == R.id.btn_delete_info){
-                            String info_id = mlist.get(position).getInfo_id();
-                            RemoveInfo removeInfo = new RemoveInfo();
-                            removeInfo.execute(mlist.get(position).getInfo_id());
-                            mlist.remove(position);
-                            notifyDataSetChanged();
+
+                            pop.dismiss();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(act);
+                            builder.setTitle("提示");
+                            builder.setCancelable(true);
+                            builder.setMessage("您确定要删除？");
+                            builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String info_id = info.getInfo_id();
+                                    RemoveInfo removeInfo = new RemoveInfo();
+                                    removeInfo.execute(info_id);
+                                    mlist.remove(info);
+
+                                    notifyDataSetChanged();
+                                }
+                            });
+                            builder.setNegativeButton("不", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            builder.show();
+
                         }
 
                     }
                 };
                 pop.setClick(listener1);
+                View rootview = LayoutInflater.from(act).inflate(R.layout.activity_main, null);
+                pop.showAtLocation(rootview, Gravity.BOTTOM, 0, 0);
+
 
             }
         });
         //card点击事件
         holder.cView.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View v) {
                 Intent intent = new Intent(Myapplication.getRealContext(), InfoContentActivity.class);
+                Log.d(TAG, info.toString());
                 intent.putExtra("Class_id",info.getClass_id());
                 intent.putExtra("Info_id",info.getInfo_id());
                 intent.putExtra("title",info.getInfo_title());

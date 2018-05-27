@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-       android:shape="rectangle" >
+       android:shape="rectangle"
+    >
 
     <solid android:color="#ffffff" />
+
     <!-- 边框 -->
     <stroke
-        android:width="2dip"
-        android:color="#ffffff" />
+
+        android:width="1dip"
+        android:color="#000" />
     <!-- 内填充颜色 -->
     <padding
         android:bottom="10dp"
@@ -14,6 +17,6 @@
         android:right="10dp"
         android:top="10dp" />
     <!-- 圆角 -->
-
+    <corners android:radius="6dp" />
 
 </shape>

@@ -1,6 +1,7 @@
 package com.dongzhex.webservice;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.dongzhex.NomalService.Myapplication;
@@ -21,7 +22,7 @@ import java.net.URL;
 
 public class publishInfoWebService extends AsyncTask<String,Integer,Integer>{
     String urls = NetUnit.URL+"/InfoSystem/publishInfoWebService";
-
+    private static final String TAG = "publishInfoWebService";
     @Override
     protected Integer doInBackground(String... params) {
         String Class_id = params[0];
@@ -29,6 +30,8 @@ public class publishInfoWebService extends AsyncTask<String,Integer,Integer>{
         String content = params[3];
         String title = params[2];
         String data = Class_id+"/"+author+"/"+title+"/"+content;
+
+        Log.d(TAG, data);
         BufferedReader bufferedReader;
         BufferedWriter bufferedWriter;
         InputStream in;
@@ -38,12 +41,15 @@ public class publishInfoWebService extends AsyncTask<String,Integer,Integer>{
             URL url = new URL(urls);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             NetUnit.initConn(conn);
-            in = conn.getInputStream();
+
             out = conn.getOutputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
+
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out,"GBK"));
             bufferedWriter.write(data);
+            bufferedWriter.flush();
             conn.connect();
+            in = conn.getInputStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(in,"GBK"));
             if(conn.getResponseCode()== 200){
                 String result = bufferedReader.readLine();
                 bufferedReader.close();
@@ -63,7 +69,7 @@ public class publishInfoWebService extends AsyncTask<String,Integer,Integer>{
     @Override
     protected void onPostExecute(Integer integer) {
         if(integer == 1){
-            Toast.makeText(Myapplication.getRealContext(), "成功：15650111502", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Myapplication.getRealContext(), "发布成功！！！！！！！", Toast.LENGTH_SHORT).show();
         }
         else{
             Toast.makeText(Myapplication.getRealContext(), "发布失败", Toast.LENGTH_SHORT).show();

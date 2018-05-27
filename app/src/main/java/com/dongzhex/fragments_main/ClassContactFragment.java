@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dongzhex.AdapterPack.UserXAdapter;
@@ -47,6 +48,8 @@ public class ClassContactFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        TextView title_main = (TextView) getActivity().findViewById(R.id.main_Title);
+        title_main.setText("联系方式");
         view = inflater.inflate(R.layout.class_contact_layout,container,false);
         recyclerView = (RecyclerView)view.findViewById(R.id.contact_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
@@ -99,29 +102,30 @@ public class ClassContactFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                onRefresh();
+                Refresh();
             }
         });
     }
-    private void onRefresh(){
+    private void Refresh(){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        initmlist();
+                        RequestContantList requestContantList = new RequestContantList(sl);
+                        requestContantList.execute(Class_id);
                         recyclerView.getAdapter().notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
-        });
+        }).start();
     }
     //权限申请
     @Override

@@ -24,6 +24,8 @@ public class popMenu extends PopupWindow {
 
     public void setClick(View.OnClickListener listener){
         itemsOnClick = listener;
+        btn_edit.setOnClickListener(itemsOnClick);
+        btn_delete.setOnClickListener(itemsOnClick);
     }
     public popMenu(Context mContext) {
 

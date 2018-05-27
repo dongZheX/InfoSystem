@@ -237,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
                             //0第一次登陆，1不是第一次登陆
                             if(firstLogin == 0){
                                 perfect_information_user.activityStart(LoginActivity.this,trueName);
-
+                                LoginActivity.this.finish();
                             }
 
                             else{
@@ -245,12 +245,20 @@ public class LoginActivity extends AppCompatActivity {
                                 intent = new Intent(LoginActivity.this,MainActivity.class);
                                 intent.putExtra("args1",trueName);
                                 startActivity(intent);
+                                LoginActivity.this.finish();
                             }
                         }else{
                             MessageBox.showMessageBox(LoginActivity.this,"警告","密码或者用户名错误",true);
+                            SharedPreferences.Editor editor = mainSetting.edit();
+                            editor.clear();
+                            editor.apply();
+                            username.setText("");
+                            password.setText("");
+                            remember_pass.setChecked(false);
+                            }
                         }
 
-                    }
+
 
                     @Override
                     public void successInfo(List<Info> mlist) {

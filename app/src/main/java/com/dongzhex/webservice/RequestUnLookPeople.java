@@ -20,7 +20,7 @@ import java.util.List;
  * Created by ASUS on 2018/5/21.
  */
 
-public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
+public class RequestUnLookPeople extends AsyncTask<String,Integer,String>{
     private
     String urls = NetUnit.URL+"/InfoSystem/ReturnUnLookPeople";
     private static final String TAG = "RequestUnLookPeople";
@@ -32,7 +32,7 @@ public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
     }
 
     @Override
-    protected Integer doInBackground(String... params) {
+    protected String doInBackground(String... params) {
         String info_id = params[0];
         BufferedReader bufferedReader;
         BufferedWriter bufferedWriter;
@@ -48,13 +48,15 @@ public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
             conn.setDoOutput(true);
             conn.setConnectTimeout(1000);
             conn.setReadTimeout(1000);
-            in = conn.getInputStream();
+
             out = conn.getOutputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
+
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(out));
             bufferedWriter.write(info_id);
             bufferedWriter.flush();
             conn.connect();
+            in = conn.getInputStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(in));
             if(conn.getResponseCode()==200){
                 Log.d(TAG, "连接成功");
                 StringBuilder builder = new StringBuilder();
@@ -62,25 +64,21 @@ public class RequestUnLookPeople extends AsyncTask<String,Integer,Integer>{
                     builder.append(line);
                 }
                 data = builder.toString();
-                if(!data.toString().equals("1"))
-                    return 1;
-                else
-                  return 0;
+                return data;
             }
-            else{
-                return 0;
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(Integer integer) {
+    protected void onPostExecute(String s) {
         if(data!=null)
 
-        sl.success(data);
-        super.onPostExecute(integer);
+        sl.success(s);
+        super.onPostExecute(s);
     }
 }

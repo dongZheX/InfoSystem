@@ -61,8 +61,7 @@ public class perfect_information_user extends PhotoGetter {
         set_confirm.setOnClickListener(new View.OnClickListener() {
 
 
-            final boolean isPhone = true;//;
-            final boolean isName = true;
+
             @Override
             public void onClick(View v) {
                 //下策

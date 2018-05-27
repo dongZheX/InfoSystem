@@ -33,7 +33,7 @@
                     android:text="主界面"/>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -43,6 +43,7 @@
                 android:id="@+id/fragment_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
             </android.support.v4.view.ViewPager>
             <!--底部导航栏-->
@@ -54,7 +55,7 @@
                 android:layout_gravity="bottom"
                 android:background="?android:attr/windowBackground"
                 />
-        </RelativeLayout>
+        </LinearLayout>
 
 
 
