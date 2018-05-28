@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.dongzhex.NomalService.BaseTool;
 import com.dongzhex.NomalService.MessageBox;
 import com.dongzhex.NomalService.NetUnit;
 import com.dongzhex.entity.UserX;
@@ -71,11 +72,24 @@ public class Personal_Center extends PhotoGetter {
                 sphone = phone.getText().toString();
                 temp =new UserX(susername,sname,sClass_id,ssex,sphone,saddress,sQQ,"",sbirth);
                 try {
-                    PerfectInfoUserX service = new PerfectInfoUserX();
-                    service.execute(temp);
-                    if(bitmap[4]!=null){
-                        UploadBitmap uploadBitmap = new UploadBitmap(username.getText().toString());
-                        uploadBitmap.execute(bitmap[4]);
+                    if(!BaseTool.isMobileNumber(sphone)){
+                        MessageBox.showMessageBox(Personal_Center.this,"提示","电话号码不合法",true).show();
+
+                    }
+                    else if(!BaseTool.ChineseNameTest(sname)){
+                        MessageBox.showMessageBox(Personal_Center.this,"提示","姓名不合法",true).show();
+                    }else if(Integer.parseInt(mon.getText().toString())>12||Integer.parseInt(day.getText().toString())>31){
+                        MessageBox.showMessageBox(Personal_Center.this,"提示","日期不合法",true).show();
+                    }else if(!BaseTool.isQQ(sQQ)){
+                        MessageBox.showMessageBox(Personal_Center.this,"提示","QQ不合法",true).show();
+                    }
+                    else {
+                        PerfectInfoUserX service = new PerfectInfoUserX();
+                        service.execute(temp);
+                        if (bitmap[4] != null) {
+                            UploadBitmap uploadBitmap = new UploadBitmap(username.getText().toString());
+                            uploadBitmap.execute(bitmap[4]);
+                        }
                     }
                 }catch (Exception e){
                     MessageBox.showMessageBox(Personal_Center.this,"bug提示","未调试的错误002",false);

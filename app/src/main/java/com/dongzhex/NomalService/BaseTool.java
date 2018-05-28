@@ -65,8 +65,8 @@ public class BaseTool {
     //验
     public static boolean isMobileNumber(String mobilenumber) {
 
-        String val =  "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17([0,1,6,7,]))|(18[0-2,5-9]))\\\\d{8}$";
-        boolean isPhone =Pattern.compile(val).matcher(val).matches();
+        String val =  "^[1][3,4,5,7,8][0-9]{9}$";
+        boolean isPhone =Pattern.compile(val).matcher(mobilenumber).matches();
         return isPhone;
     }
     public static boolean ChineseNameTest(String name) {
@@ -78,5 +78,9 @@ public class BaseTool {
 
 
     }
-
+    public static boolean isQQ(String name){
+        String  regex ="[1-9][0-9]{4,14}";
+        boolean isQQ = Pattern.compile(regex).matcher(name).matches();
+        return isQQ;
+    }
 }
