@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dongzhex.AdapterPack.UserXAdapter;
+import com.dongzhex.NomalService.KMP;
 import com.dongzhex.NomalService.Myapplication;
 import com.dongzhex.entity.Info;
 import com.dongzhex.entity.User;
@@ -29,8 +32,10 @@ import com.dongzhex.jsonService.JsonService;
 import com.dongzhex.someactivities.infosystem.R;
 import com.dongzhex.webservice.RequestContantList;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.y;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -40,10 +45,15 @@ import static android.content.Context.MODE_PRIVATE;
 public class ClassContactFragment extends Fragment {
     private View view;
     private List<UserX> mlist;
+    private List<UserX> tempList = new ArrayList<>();
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String Class_id;
     private successListener sl;
+    private SearchView search_contact;//搜索框
+    private Runnable runnable;
+    private Handler handler;
+    private UserXAdapter userXAdapter;
     private static final String TAG = "ClassContactFragment";
     @Nullable
     @Override
@@ -63,7 +73,38 @@ public class ClassContactFragment extends Fragment {
         if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CALL_PHONE},1);
         }
+        //实现搜索
+        search_contact = (SearchView)view.findViewById(R.id.search_contact);
+        handler = new Handler();
+        search_contact.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        searchTag(query);
+                    }
+                };
+                if(runnable!=null)
+                    handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable,800);
+                return true;
+            }
 
+            @Override
+            public boolean onQueryTextChange(final String newText) {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        searchTag(newText);
+                    }
+                };
+                if(runnable!=null)
+                    handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable,800);
+                return true;
+            }
+        });
         return view;
     }
     //初始化
@@ -73,13 +114,14 @@ public class ClassContactFragment extends Fragment {
             public void success(User x) {
 
             }
-
             @Override
             public void success(String x) {
                 Log.d(TAG, x);
                 mlist = JsonService.jsonToList(x,UserX.class);
                 if(mlist!=null) {
-                    UserXAdapter userXAdapter = new UserXAdapter(mlist, view.getContext(),getActivity());
+                    tempList.clear();
+                    tempList.addAll(mlist);
+                    userXAdapter  = new UserXAdapter(tempList, view.getContext(),getActivity());
                     recyclerView.setAdapter(userXAdapter);
                 }
             }
@@ -140,5 +182,20 @@ public class ClassContactFragment extends Fragment {
                 }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    void searchTag(String str){
+        if(mlist!=null) {
+            tempList.clear();
+            if (str.equals("")) {
+                tempList.addAll(mlist);
+            } else {
+                for (int i = 0; i < mlist.size(); i++) {
+                    if (KMP.kmp(mlist.get(i).getUser_name(), str) != -1||KMP.kmp(mlist.get(i).getUser_phone(),str)!=-1) {
+                        tempList.add(new UserX(mlist.get(i)));
+                    }
+                }
+            }
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 }

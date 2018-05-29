@@ -34,7 +34,7 @@
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <TextView
+        <TextView
         android:id="@+id/textView_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,6 +49,12 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:hint="请输入用户名"/>
+        <ImageView
+            android:id="@+id/delete_username_btn"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/edit_delete_pressed_icno"/>
     </LinearLayout>
     <!--密码-->
     <LinearLayout
@@ -71,6 +77,12 @@
             android:layout_width="250dp"
             android:hint="请输入密码"
             android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/delete_pass_btn"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/edit_delete_pressed_icno"/>
     </LinearLayout>
     <!--设置栏-->
     <LinearLayout

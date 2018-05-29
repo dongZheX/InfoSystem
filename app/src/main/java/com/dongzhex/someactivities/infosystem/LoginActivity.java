@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     private CheckBox remember_pass;
     private Button login;
     private TextView find_back_pass;
+    private ImageView delete_username;
+    private ImageView delete_pass;
     private String string_username="";
     private String string_password="";
     private Boolean isRemember;
@@ -75,7 +78,8 @@ public class LoginActivity extends AppCompatActivity {
         login = (Button)findViewById(R.id.button_login);
         find_back_pass = (TextView)findViewById(R.id.find_back_pass);
         remember_pass = (CheckBox)findViewById(R.id.remember_pass);
-
+        delete_username = (ImageView)findViewById(R.id.delete_username_btn);
+        delete_pass = (ImageView)findViewById(R.id.delete_pass_btn);
         isRemember = mainSetting.getBoolean("isRemember",false);
         circleImageView = (CircleImageView)findViewById(R.id.loginPhoto);
         circleImageView.setImageResource(R.drawable.morentouxiang);
@@ -131,7 +135,18 @@ public class LoginActivity extends AppCompatActivity {
     //login点击事件
     private void setLoginClick(){
         SuccessFlag = false;
-
+        delete_pass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                password.setText("");
+            }
+        });
+        delete_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                username.setText("");
+            }
+        });
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

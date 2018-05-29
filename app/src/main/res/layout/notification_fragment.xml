@@ -6,12 +6,23 @@
               android:layout_height="match_parent"
 
               android:orientation="vertical">
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+
+        android:focusableInTouchMode="true"
+        >
+
+    </android.support.v7.widget.SearchView>
     <!--下拉刷新-->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_notification"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="match_parent">
+
         <!--通知条目-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/notification_recycler"

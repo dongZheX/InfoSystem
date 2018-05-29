@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 /**
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
  */
 
 public class BaseTool {
+    static Calendar calendar = Calendar.getInstance();//该对象创建开销相当大
     //图片转字节
     public static byte[] Bitmap2Bytes(Bitmap bm){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -82,5 +84,16 @@ public class BaseTool {
         String  regex ="[1-9][0-9]{4,14}";
         boolean isQQ = Pattern.compile(regex).matcher(name).matches();
         return isQQ;
+    }
+    public static boolean isDay(String y,String m,String d) {
+        int year = Integer.parseInt(y);
+        int month = Integer.parseInt(m);
+        int day = Integer.parseInt(d);
+        int days[] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+        if(year%400==0||(year%100!=0&&year%4==0)) {
+            days[2] = 29;
+        }
+        int presentYear = calendar.get(Calendar.YEAR);
+        return year>1900&&year<presentYear&&month<=12&&day<=days[month];
     }
 }

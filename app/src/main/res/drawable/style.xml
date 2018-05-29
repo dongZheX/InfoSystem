@@ -1,24 +1,8 @@
-<resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-    <style name="take_photo_anim" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
-        <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
-    </style>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="editTextStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-
+        <item name="android:background">@drawable/search_edit_bg</item>
         <item name="android:drawablePadding">5dp</item>
         <item name="android:drawableStart">@drawable/search_icon</item>
         <item name="android:gravity">center_vertical</item>
@@ -35,5 +19,6 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>
     </style>
-
 </resources>
+
+

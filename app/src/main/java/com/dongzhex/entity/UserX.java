@@ -21,11 +21,23 @@ public class UserX extends DataSupport implements Serializable{
     private String User_image = "";     //照片
     private String birth = "";
     public UserX() {
-    }
 
+    }
+    public UserX(UserX userx) {
+        Username = userx.getUsername();
+        User_name = userx.getUser_name();
+        Class_id = userx.getClass_id();
+        User_sex = userx.getUser_sex();
+        User_phone = userx.getUser_phone();
+        User_address = userx.getUser_address();
+        User_QQ = userx.getUser_QQ();
+        User_image = userx.getUser_image();
+        birth = userx.getBirth();
+    }
     public String getBirth() {
         return birth;
     }
+
 
     @Override
     public String toString() {

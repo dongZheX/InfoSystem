@@ -79,7 +79,13 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final int p =position;
         final Info info = mlist.get(position);
-        holder.title.setText(info.getInfo_title());
+        if(info.getInfo_title().length()>27){
+            holder.title.setText(info.getInfo_title().substring(0,27)+"……");
+        }
+        else{
+            holder.title.setText(info.getInfo_title());
+        }
+
         holder.author.setText(info.getInfo_author());
         holder.time.setText(info.getTime());
         //按钮点击事件

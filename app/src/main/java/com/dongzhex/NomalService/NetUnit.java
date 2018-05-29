@@ -8,7 +8,7 @@ import java.net.ProtocolException;
  */
 
 public class NetUnit {
-    public static  String URL  = "http://172.27.238.96:8080";
+    public static  String URL  = "http://172.26.38.107:8080";
     public static void initConn(HttpURLConnection conn) throws ProtocolException {
         conn.setRequestMethod("POST");
         conn.setDoInput(true);
